@@ -44,7 +44,7 @@ private:
 
 
 // Library Code
-template <template <class Created> class CreationPolicy> // Created can be omitted
+template <template <class Created> class CreationPolicy = OpNewCreator> // Created can be omitted
 class WidgetManager : public CreationPolicy<Widget>
 {
 public:
@@ -62,10 +62,11 @@ private:
 
 
 // Application code
-typedef WidgetManager<OpNewCreator> MyWidgetManager;
+typedef WidgetManager<MallocCreator> MyWidgetManager;
 
 int main()
 {
-  MyWidgetManager widgetManager;
+  WidgetManager<> widgetManager1;
+  MyWidgetManager widgetManager2;
   return 0;
 }
