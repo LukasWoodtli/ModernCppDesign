@@ -11,6 +11,8 @@ struct OpNewCreator
   {
     return new T;
   }
+protected:
+  ~OpNewCreator() {}
 };
 
 
@@ -23,6 +25,8 @@ struct MallocCreator
     if (!buf) return 0;
     return new (buf) T;
   }
+protected:
+  ~MallocCreator() {} // All policy classes need to have protected non-virtual dtors. So the host classes can't be deleted with a policy pointer to host class.
 };
 
 template <class T>
@@ -38,6 +42,8 @@ struct PrototypeCreator
 
   T GetPrototype() {return pPrototype_;}
   void SetPrototype(T pObj) { pPrototype_ = pObj;}
+protected:
+  ~PrototypeCreator() {}
 private:
   T pPrototype_;
 };
@@ -67,6 +73,11 @@ typedef WidgetManager<MallocCreator> MyWidgetManager;
 int main()
 {
   WidgetManager<> widgetManager1;
-  MyWidgetManager widgetManager2;
+  MyWidgetManager * widgetManager2 = new MyWidgetManager();
+  MallocCreator<Widget> * castedWidgetManager2 = dynamic_cast<MallocCreator<Widget>*>(widgetManager2);
+  // not possible when dtor of MallocCreator is protected: delete castedWidgetManager2;
+  // but this works
+  delete widgetManager2;
+
   return 0;
 }
