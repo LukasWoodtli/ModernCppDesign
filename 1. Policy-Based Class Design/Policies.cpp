@@ -32,20 +32,20 @@ protected:
 template <class T>
 struct PrototypeCreator
 {
-  PrototypeCreator(T pObj = 0)
+  PrototypeCreator(T * pObj = 0)
     : pPrototype_(pObj) {}
   
-  T Create()
+  T * Create()
   {
     return pPrototype_ ? pPrototype_->Clone() : 0;
   }
 
-  T GetPrototype() {return pPrototype_;}
-  void SetPrototype(T pObj) { pPrototype_ = pObj;}
+  T * GetPrototype() {return pPrototype_;}
+  void SetPrototype(T * pObj=0) { pPrototype_ = pObj;}
 protected:
   ~PrototypeCreator() {}
 private:
-  T pPrototype_;
+  T * pPrototype_;
 };
 
 
@@ -57,6 +57,12 @@ public:
   void DoSomething() {
     // due to template template parameters we can also use the same creation policy for gadgets here
     Gadget *pw = CreationPolicy<Gadget>().Create();
+  }
+
+  void SwitchPrototype(Widget *p£NewPrototype)  {
+    CreationPolicy<Widget> &myPolicy = *this;
+    delete myPolicy.GetPrototype();
+    myPolicy.SetPrototype(p£NewPrototype);
   }
 
 private:
@@ -78,6 +84,12 @@ int main()
   // not possible when dtor of MallocCreator is protected: delete castedWidgetManager2;
   // but this works
   delete widgetManager2;
+
+  WidgetManager<PrototypeCreator> widgetManager3;
+  Widget * newPrototype = new Widget();
+  widgetManager3.SwitchPrototype(newPrototype);
+
+  // This doesn't work: widgetManager1.SwitchPrototype(newPrototype);
 
   return 0;
 }
