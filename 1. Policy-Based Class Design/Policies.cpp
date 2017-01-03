@@ -1,4 +1,4 @@
-
+#include <cstdlib>
 
 class Widget {};
 class Gadget {};
@@ -59,10 +59,10 @@ public:
     Gadget *pw = CreationPolicy<Gadget>().Create();
   }
 
-  void SwitchPrototype(Widget *p£NewPrototype)  {
+  void SwitchPrototype(Widget *pNewPrototype)  {
     CreationPolicy<Widget> &myPolicy = *this;
     delete myPolicy.GetPrototype();
-    myPolicy.SetPrototype(p£NewPrototype);
+    myPolicy.SetPrototype(pNewPrototype);
   }
 
 private:

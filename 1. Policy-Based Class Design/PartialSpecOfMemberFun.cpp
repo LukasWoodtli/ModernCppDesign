@@ -37,6 +37,7 @@ int main(int argc, char* argv[])
  
   int a;
   cin >> a;
-	return 0;
+
+  return 0;
 }
 
