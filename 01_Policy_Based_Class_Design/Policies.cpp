@@ -34,7 +34,7 @@ struct PrototypeCreator
 {
   PrototypeCreator(T * pObj = 0)
     : pPrototype_(pObj) {}
-  
+
   T * Create()
   {
     return pPrototype_ ? pPrototype_->Clone() : 0;
@@ -57,6 +57,7 @@ public:
   void DoSomething() {
     // due to template template parameters we can also use the same creation policy for gadgets here
     Gadget *pw = CreationPolicy<Gadget>().Create();
+    (void)pw; // just as demonstration, not used
   }
 
   void SwitchPrototype(Widget *pNewPrototype)  {
@@ -68,7 +69,7 @@ public:
 private:
 
 };
-/* You cannot use Created inside WidgetManagerit is a formal argument for CreationPolicy 
+/* You cannot use Created inside WidgetManagerit is a formal argument for CreationPolicy
    (not WidgetManager) and can be simply omitted . */
 
 
@@ -81,7 +82,8 @@ int main()
   WidgetManager<> widgetManager1;
   MyWidgetManager * widgetManager2 = new MyWidgetManager();
   MallocCreator<Widget> * castedWidgetManager2 = dynamic_cast<MallocCreator<Widget>*>(widgetManager2);
-  // not possible when dtor of MallocCreator is protected: delete castedWidgetManager2;
+  (void)castedWidgetManager2; // not possible to delete when dtor of MallocCreator is protected: delete castedWidgetManager2;
+
   // but this works
   delete widgetManager2;
 

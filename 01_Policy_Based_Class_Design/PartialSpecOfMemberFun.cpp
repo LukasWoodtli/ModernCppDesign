@@ -27,17 +27,13 @@ template <class U>
 void Gadget<char, U>::Fun()  {cout << "Gadget<char, U>::Fun() implementation" << endl;}
 */
 
-int main(int argc, char* argv[])
+int main(void)
 {
   Widget<long> genericwidget;
   genericwidget.Fun();
 
   Widget<char> charWidget;
   charWidget.Fun();
- 
-  int a;
-  cin >> a;
 
   return 0;
 }
-
