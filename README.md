@@ -1,15 +1,15 @@
-My playground for the examples of the famous book: "Modern C++ Design".
-http://erdani.com/index.php/books/modern-c-design/
+My playground for the examples of the famous book: ["Modern C++ Design"](http://erdani.com/index.php/books/modern-c-design/)
 
 # Build
 [![Build Status](https://travis-ci.org/LukasWoodtli/ModernCppDesign.svg?branch=master)](https://travis-ci.org/LukasWoodtli/ModernCppDesign)
 
 # Contents
 
-## Part I: Techniques	1
+[TOC]
 
+## Part I: Techniques
 
-### Chapter 1. Policy-Based Class Design	2
+### Chapter 1. Policy-Based Class Design
 
 | Section | Title | Page | Done |
 |-----------|-----------|-----------|-----------|
@@ -28,7 +28,7 @@ http://erdani.com/index.php/books/modern-c-design/
 | 1.13	| Summary	| 17 |	|
 
 
-### Chapter 2. Techniques	19
+### Chapter 2. Techniques
 
 | Section | Title | Page | Done |
 |-----------|-----------|-----------|-----------|
@@ -45,7 +45,7 @@ http://erdani.com/index.php/books/modern-c-design/
 | 2.11	| Summary	| 40 |	|
 
 
-### Chapter 3. Typelists	42
+### Chapter 3. Typelists
 
 | Section | Title | Page | Done |
 |-----------|-----------|-----------|-----------|
@@ -66,7 +66,7 @@ http://erdani.com/index.php/books/modern-c-design/
 | 3.15	| Typelist Quick Facts	| 66 |	|
 
 
-### Chapter 4. Small-Object Allocation	68
+### Chapter 4. Small-Object Allocation
 
 | Section | Title | Page | Done |
 |-----------|-----------|-----------|-----------|
@@ -82,9 +82,9 @@ http://erdani.com/index.php/books/modern-c-design/
 | 4.10	| Summary	| 83 |	|
 | 4.11	| Small-Object Allocator Quick Facts	| 83 |	|
 
-## Part II: Components	85
+## Part II: Components
 
-### Chapter 5. Generalized Functors	86
+### Chapter 5. Generalized Functors
 
 | Section | Title | Page | Done |
 |-----------|-----------|-----------|-----------|
@@ -106,7 +106,7 @@ http://erdani.com/index.php/books/modern-c-design/
 | 5.16	| Functor Quick Facts	| 111 |	|
 
 
-### Chapter 6. Implementing Singletons	113
+### Chapter 6. Implementing Singletons
 
 | Section | Title | Page | Done |
 |-----------|-----------|-----------|-----------|
@@ -125,7 +125,7 @@ http://erdani.com/index.php/books/modern-c-design/
 | 6.13	| SingletonHolder Class Template Quick Facts	| 136 |	|
 
 
-### Chapter 7. Smart Pointers	138
+### Chapter 7. Smart Pointers
 
 | Section | Title | Page | Done |
 |-----------|-----------|-----------|-----------|
@@ -137,7 +137,7 @@ http://erdani.com/index.php/books/modern-c-design/
 | 7.6	| The Address-of Operator	| 150 |	|
 | 7.7	| Implicit Conversion to Raw Pointer Types	| 151 |	|
 | 7.8	| Equality and Inequality	| 153 |	|
-| 7.9	| Ordering Comparisons	| 157 |iv
+| 7.9	| Ordering Comparisons	| 157 | |
 | 7.10	| Checking and Error Reporting	| 159 |	|
 | 7.11	| Smart Pointers to const and const Smart Pointers	| 161 |	|
 | 7.12	| Arrays	| 161 |	|
@@ -147,7 +147,7 @@ http://erdani.com/index.php/books/modern-c-design/
 | 7.16	| SmartPtr Quick Facts	| 171 |	|
 
 
-### Chapter 8. Object Factories	173
+### Chapter 8. Object Factories
 
 | Section | Title | Page | Done |
 |-----------|-----------|-----------|-----------|
@@ -164,7 +164,7 @@ http://erdani.com/index.php/books/modern-c-design/
 | 8.11	| CloneFactory Class Template Quick Facts	| 190 |	|
 
 
-### Chapter 9. Abstract Factory	191
+### Chapter 9. Abstract Factory
 
 | Section | Title | Page | Done |
 |-----------|-----------|-----------|-----------|
@@ -176,7 +176,7 @@ http://erdani.com/index.php/books/modern-c-design/
 | 9.6	| AbstractFactory and ConcreteFactory Quick Facts	| 203 |	|
 
 
-### Chapter 10. Visitor	205
+### Chapter 10. Visitor
 
 | Section | Title | Page | Done |
 |-----------|-----------|-----------|-----------|
@@ -190,7 +190,7 @@ http://erdani.com/index.php/books/modern-c-design/
 | 10.8	| Visitor Generic Components Quick Facts	| 226 |	|
 
 
-### Chapter 11. Multimethods	228
+### Chapter 11. Multimethods
 
 | Section | Title | Page | Done |
 |-----------|-----------|-----------|-----------|
