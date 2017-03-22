@@ -7,43 +7,43 @@ My playground for the examples of the famous book: ["Modern C++ Design"](http://
 
 ## Part I: Techniques
 
-### Chapter 1. Policy-Based Class Design
+### Chapter 1. Policy-Based Class Design (25)
 
 | Section | Title                                   | Page | Done |
 |---------|-----------------------------------------|------|------|
-| 1.1     | The Multiplicity of Software Design     |    2 |   ✓  |
-| 1.2     | The Failure of the Do-It-All Interface  |    3 |   ✓  |
-| 1.3     | Multiple Inheritance to the Rescue?     |    4 |   ✓  |
-| 1.4     | The Benefit of Templates                |    5 |   ✓  |
-| 1.5     | Policies and Policy Classes             |    6 |   ✓  |
-| 1.6     | Enriched Policies                       |    9 |   ✓  |
-| 1.7     | Destructors of Policy Classes           |   10 |   ✓  |
-| 1.8     | Optional Functionality Through Incomplete Instantiation | 11 |  |
-| 1.9     | Combining Policy Classes                |   12 |      |
-| 1.10    | Customizing Structure with Policy Classes | 13 |      |
-| 1.11    | Compatible and Incompatible Policies    |   14 |      |
-| 1.12    | Decomposing a Class into Policies       |   16 |      |
-| 1.13    | Summary                                 |   17 |      |
+| 1.1     | The Multiplicity of Software Design     |   27 |   ✓  |
+| 1.2     | The Failure of the Do-It-All Interface  |   28 |   ✓  |
+| 1.3     | Multiple Inheritance to the Rescue?     |   29 |   ✓  |
+| 1.4     | The Benefit of Templates                |   30 |   ✓  |
+| 1.5     | Policies and Policy Classes             |   33 |   ✓  |
+| 1.6     | Enriched Policies                       |   36 |   ✓  |
+| 1.7     | Destructors of Policy Classes           |   37 |   ✓  |
+| 1.8     | Optional Functionality Through Incomplete Instantiation | 11 | ✓ |
+| 1.9     | Combining Policy Classes                |   39 |      |
+| 1.10    | Customizing Structure with Policy Classes | 42 |      |
+| 1.11    | Compatible and Incompatible Policies    |   43 |      |
+| 1.12    | Decomposing a Class into Policies       |   46 |      |
+| 1.13    | Summary                                 |   48 |      |
 
 
-### Chapter 2. Techniques
+### Chapter 2. Techniques (49)
 
 | Section | Title                               | Page | Done |
 |---------|-------------------------------------|------|------|
-|  2.1    | Compile-Time Assertions             |   19 |      |
-|  2.2    | Partial Template Specialization     |   22 |      |
-|  2.3    | Local Classes                       |   23 |      |
-|  2.4    | Mapping Integral Constants to Types |   24 |      |
-|  2.5    | Type-to-Type Mapping                |   26 |      |
-|  2.6    | Type Selection                      |   28 |      |
-|  2.7    | Detecting Convertibility and Inheritance at Compile Time | 29 | |
-|  2.8    | A Wrapper Around type_info          |   32 |      |
-|  2.9    | NullType and EmptyType              |   34 |      |
-| 2.10    | Type Traits                         |   34 |      |
-| 2.11    | Summary                             |   40 |      |
+|  2.1    | Compile-Time Assertions             |   50 |      |
+|  2.2    | Partial Template Specialization     |   53 |      |
+|  2.3    | Local Classes                       |   55 |      |
+|  2.4    | Mapping Integral Constants to Types |   58 |      |
+|  2.5    | Type-to-Type Mapping                |   61 |      |
+|  2.6    | Type Selection                      |   64 |      |
+|  2.7    | Detecting Convertibility and Inheritance at Compile Time | 65 | |
+|  2.8    | A Wrapper Around type_info          |   66 |      |
+|  2.9    | NullType and EmptyType              |   68 |      |
+| 2.10    | Type Traits                         |   68 |      |
+| 2.11    | Summary                             |   74 |      |
 
 
-### Chapter 3. Typelists
+### Chapter 3. Typelists (76)
 
 | Section | Title | Page | Done |
 |-----------|-----------|-----------|-----------|
