@@ -5,3 +5,6 @@ add_test(PartialSpecOfMemberFun PartialSpecOfMemberFun)
 
 add_executable(Policies Policies.cpp)
 add_test(Policies Policies)
+
+add_executable(SmartPointerPolicies SmartPointerPolicies.cpp)
+add_test(SmartPointerPolicies SmartPointerPolicies)
