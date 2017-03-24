@@ -4,7 +4,7 @@
 template<class T,
 	template <class> class CheckingPolicy,
 	template <class> class ThreadingModel>
-class SmartPtr : public CheckingPolicy<T>, public ThreadingModel<T> {
+class SmartPtr : public CheckingPolicy<T> , public ThreadingModel<T> { /* in the book it's: , public ThreadingModel<SmartPtr> but it doesn't work */
 	// ...
 public:
 	T* operator->() {
