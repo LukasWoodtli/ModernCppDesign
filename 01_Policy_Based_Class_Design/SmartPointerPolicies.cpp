@@ -32,7 +32,7 @@ template <class T> struct NoChecking {
 template <class T> struct EnforceNotNull {
   class NullPointerException : public std::exception { /* ... */
   };
-  static void Check(T *) {
+  static void Check(T * ptr) {
     		if (!ptr) throw NullPointerException();
   }
 };
