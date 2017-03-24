@@ -10,6 +10,7 @@ class SmartPtr : public CheckingPolicy<T>,
                                             // ...
 public:
   T *operator->() {
+    // typename needed otherwise it could be a static Lock variable in ThreadingModel<SmartPtr>
     typename ThreadingModel<SmartPtr>::Lock guard(*this);
     CheckingPolicy<T>::Check(pointee_);
     return pointee_;
@@ -29,7 +30,7 @@ template <class T> struct EnforceNotNull {
   class NullPointerException : public std::exception { /* ... */
   };
   static void Check(T *) {
-    //		if (!ptr) throw NullPointerException();
+    		if (!ptr) throw NullPointerException();
   }
 };
 
