@@ -52,7 +52,7 @@ private:
   static T s_defaultValue;
   static T *GetDefaultValue() { return &s_defaultValue; }
 };
-template <class T> T EnsureNotNull<T>::s_defaultValue = T();
+template <class T> T EnsureNotNull<T>::s_defaultValue = T("default");
 
 // Threading policies
 //
@@ -65,10 +65,13 @@ template <class T> struct SingleThreaded {
 
 class Widget {
 public:
+	Widget(std::string name) : name_(name) {}
   void hello() {
-    std::cout << "Hello"
+    std::cout << "Hello "
+              << name_
               << "\n";
   }
+	std::string name_;
 };
 
 typedef SmartPtr<Widget, NoChecking, SingleThreaded> WidgetPtr;
@@ -76,10 +79,12 @@ typedef SmartPtr<Widget, NoChecking, SingleThreaded> WidgetPtr;
 typedef SmartPtr<Widget, EnsureNotNull, SingleThreaded> EnsuredWidgetPtr;
 
 int main(void) {
-  WidgetPtr widgetPtr(new Widget);
-  widgetPtr->hello();
+  WidgetPtr widgetPtr(new Widget("one"));
+	// WidgetPtr widgetPtr(NULL); // this would create a segfault
+	widgetPtr->hello();
 
-  EnsuredWidgetPtr ensuredPtr(new Widget);
+  EnsuredWidgetPtr ensuredPtr(new Widget("two"));
+	//EnsuredWidgetPtr ensuredPtr(NULL); // this would get an error when deleting NULL
   ensuredPtr->hello();
 
   return 0;
