@@ -1,8 +1,10 @@
 #include <exception>
 #include <iostream>
 
+template <class T> struct SingleThreaded;
+
 template <class T, template <class> class CheckingPolicy,
-          template <class> class ThreadingModel>
+          template <class> class ThreadingModel = SingleThreaded >
 class SmartPtr : public CheckingPolicy<T>,
                  public ThreadingModel<T> { /* in the book it's: , public
                                                ThreadingModel<SmartPtr> but it
@@ -10,6 +12,15 @@ class SmartPtr : public CheckingPolicy<T>,
                                             // ...
 public:
   SmartPtr(T* pointee) : pointee_(pointee ) {}
+  
+  // 1.11. Compatible and Incompatible Policies
+  template< class T1,
+	    template <class> class CP1,
+	    template <class> class TM1 >
+  SmartPtr(const SmartPtr<T1, CP1, TM1>& other)
+    : pointee_(other.pointee_), CheckingPolicy<T>(other)
+  {}
+
   ~SmartPtr() { delete pointee_; }
   T *operator->() {
     // typename needed otherwise it could be a static Lock variable in ThreadingModel<SmartPtr>
@@ -19,7 +30,7 @@ public:
     return pointee_;
   }
 
-private:
+protected:
   T *pointee_;
 };
 
@@ -71,11 +82,22 @@ public:
               << name_
               << "\n";
   }
-	std::string name_;
+private:
+  std::string name_;
 };
 
-typedef SmartPtr<Widget, NoChecking, SingleThreaded> WidgetPtr;
+class ExtendedWidget : public Widget {
+  public:
+  ExtendedWidget(std::string name) : Widget(name) {}
 
+  void helloExtended() {
+	  std::cout << "Extended: \n";
+	  Widget::hello();
+  }
+};
+
+
+typedef SmartPtr<Widget, NoChecking, SingleThreaded> WidgetPtr;
 typedef SmartPtr<Widget, EnsureNotNull, SingleThreaded> EnsuredWidgetPtr;
 
 int main(void) {
@@ -87,5 +109,9 @@ int main(void) {
 	//EnsuredWidgetPtr ensuredPtr(NULL); // this would get an error when deleting NULL
   ensuredPtr->hello();
 
+  // 1.11. Compatible and Incompatible Policies
+  SmartPtr<ExtendedWidget, NoChecking> noCheckExtendedWidget(new ExtendedWidget("three"));
+  // this is not working but is explained in the book SmartPtr<Widget, NoChecking> noCheckWidget(noCheckExtendedWidget);
+  
   return 0;
 }

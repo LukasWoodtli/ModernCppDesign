@@ -20,8 +20,8 @@ My playground for the examples of the famous book: ["Modern C++ Design"](http://
 | 1.7     | Destructors of Policy Classes             |   ✓  |
 | 1.8     | Optional Functionality Through Incomplete Instantiation | ✓ |
 | 1.9     | Combining Policy Classes                  |   ✓  |
-| 1.10    | Customizing Structure with Policy Classes |      |
-| 1.11    | Compatible and Incompatible Policies      |      |
+| 1.10    | Customizing Structure with Policy Classes |   ✓  |
+| 1.11    | Compatible and Incompatible Policies      |   ✓  |
 | 1.12    | Decomposing a Class into Policies         |      |
 | 1.13    | Summary                                   |      |
 
