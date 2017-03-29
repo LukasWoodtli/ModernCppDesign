@@ -106,7 +106,7 @@ int main(void) {
 	widgetPtr->hello();
 
   EnsuredWidgetPtr ensuredPtr(new Widget("two"));
-	//EnsuredWidgetPtr ensuredPtr(NULL); // this would get an error when deleting NULL
+	//EnsuredWidgetPtr ensuredPtr(NULL); // this would get an error when deleting default value
   ensuredPtr->hello();
 
   // 1.11. Compatible and Incompatible Policies
