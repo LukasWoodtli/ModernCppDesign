@@ -31,7 +31,7 @@ My playground for the examples of the famous book: ["Modern C++ Design"](http://
 | Section | Title                               | Done |
 |---------|-------------------------------------|------|
 |  2.1    | Compile-Time Assertions             |   ✓  |
-|  2.2    | Partial Template Specialization     |      |
+|  2.2    | Partial Template Specialization     |   ✓  |
 |  2.3    | Local Classes                       |      |
 |  2.4    | Mapping Integral Constants to Types |      |
 |  2.5    | Type-to-Type Mapping                |      |

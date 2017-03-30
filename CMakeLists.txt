@@ -15,5 +15,4 @@ enable_testing()
 
 
 add_subdirectory("01_Policy_Based_Class_Design")
-
-
+add_subdirectory("02_Techniques")
