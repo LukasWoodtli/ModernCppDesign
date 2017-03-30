@@ -22,15 +22,15 @@ My playground for the examples of the famous book: ["Modern C++ Design"](http://
 | 1.9     | Combining Policy Classes                  |   ✓  |
 | 1.10    | Customizing Structure with Policy Classes |   ✓  |
 | 1.11    | Compatible and Incompatible Policies      |   ✓  |
-| 1.12    | Decomposing a Class into Policies         |      |
-| 1.13    | Summary                                   |      |
+| 1.12    | Decomposing a Class into Policies         |   ✓  |
+| 1.13    | Summary                                   |   ✓  |
 
 
 ### Chapter 2. Techniques (p. 49)
 
 | Section | Title                               | Done |
 |---------|-------------------------------------|------|
-|  2.1    | Compile-Time Assertions             |      |
+|  2.1    | Compile-Time Assertions             |   ✓  |
 |  2.2    | Partial Template Specialization     |      |
 |  2.3    | Local Classes                       |      |
 |  2.4    | Mapping Integral Constants to Types |      |
