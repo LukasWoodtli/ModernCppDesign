@@ -5,3 +5,7 @@ add_test(PartialTemplateSpecialization PartialTemplateSpecialization)
 
 add_executable(Int2Type Int2Type.cpp)
 add_test(Int2Type Int2Type)
+
+add_executable(Type2Type Type2Type.cpp)
+add_test(Type2Type Type2Type)
+
