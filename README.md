@@ -35,8 +35,8 @@ My playground for the examples of the famous book: ["Modern C++ Design"](http://
 |  2.3    | Local Classes                       |   ✓  |
 |  2.4    | Mapping Integral Constants to Types |   ✓  |
 |  2.5    | Type-to-Type Mapping                |   ✓  |
-|  2.6    | Type Selection                      |      |
-|  2.7    | Detecting Convertibility and Inheritance at Compile Time | |
+|  2.6    | Type Selection                      |   ✓  |
+|  2.7    | Detecting Convertibility and Inheritance at Compile Time | ✓ |
 |  2.8    | A Wrapper Around type_info          |      |
 |  2.9    | NullType and EmptyType              |      |
 | 2.10    | Type Traits                         |      |
