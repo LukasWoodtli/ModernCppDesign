@@ -14,3 +14,7 @@ add_test(Convertibility Convertibility)
 
 add_executable(TypeInfoWrapper TypeInfoWrapper.cpp)
 add_test(TypeInfoWrapper TypeInfoWrapper)
+
+add_executable(Traits Traits.cpp)
+add_test(Traits Traits)
+
