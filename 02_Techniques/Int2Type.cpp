@@ -1,11 +1,8 @@
 
 #include <iostream>
 
+#include "Int2Type.h"
 
-template <int v>
-struct Int2Type {
-  enum {value = v};
-};
 
 class MyClass {
 };
