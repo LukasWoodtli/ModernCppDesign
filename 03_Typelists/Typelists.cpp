@@ -1,5 +1,4 @@
 
-
 class NullType {};
 
 template <class T, class U>
@@ -31,9 +30,47 @@ struct Length<Typelist<T, U>> {
 };
 
 
-// test
+// TypeAt
+template <class TList, unsigned int index>
+struct TypeAt;
+
+template <class Head, class Tail>
+struct TypeAt<Typelist<Head, Tail>, 0> {
+  typedef Head Result;
+};
+
+template <class Head, class Tail, unsigned int i>
+struct TypeAt<Typelist<Head, Tail>, i> {
+  typedef typename TypeAt<Tail, i - 1>::Result Result;
+};
+
+
+
+
+/*** Tests **************************/
+
+// comparing types (for testing)
+template<class T, class U>
+struct is_same {
+  enum { value = 0};
+};
+template<class T>
+struct is_same<T,T> {
+  enum { value = 1};
+};
+
+// create typelist
 typedef TYPELIST_4(signed char, short int, int, long int) SignedIntegrals;
+
+// lenght
 static_assert(4 == Length<SignedIntegrals>::value, "Length of typelist not correct");
+
+// type at
+static_assert(is_same<TypeAt<SignedIntegrals, 1>::Result, short int>::value, "Wrong type at index");
+
+// this gives: "error: implicit instantiation of undefined template 'TypeAt<NullType, 2>'"
+// meaning "out of bound"
+//typedef typename TypeAt<SignedIntegrals, 6>::Result, short int>::value newType,
 
 int main(void) {
   return 0;
