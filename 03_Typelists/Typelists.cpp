@@ -44,7 +44,24 @@ struct TypeAt<Typelist<Head, Tail>, i> {
   typedef typename TypeAt<Tail, i - 1>::Result Result;
 };
 
+// TypeAtNonStrict
+template <class TList, unsigned int index, class Default>
+struct TypeAtNonStrict;
 
+template <class Head, class Tail, class Default>
+struct TypeAtNonStrict<Typelist<Head, Tail>, 0, Default> {
+  typedef Head Result;
+};
+
+template <class Head, class Tail, unsigned int i, class Default>
+struct TypeAtNonStrict<Typelist<Head, Tail>, i, Default> {
+  typedef typename TypeAtNonStrict<Tail, i - 1, Default>::Result Result;
+};
+
+template <class Head, unsigned int i, class Default>
+struct TypeAtNonStrict<Typelist<Head, NullType>, i, Default> {
+  typedef Default Result;
+};
 
 
 /*** Tests **************************/
@@ -66,11 +83,18 @@ typedef TYPELIST_4(signed char, short int, int, long int) SignedIntegrals;
 static_assert(4 == Length<SignedIntegrals>::value, "Length of typelist not correct");
 
 // type at
-static_assert(is_same<TypeAt<SignedIntegrals, 1>::Result, short int>::value, "Wrong type at index");
+typedef typename TypeAt<SignedIntegrals, 1>::Result actualTypeAtIndex1;
+static_assert(is_same<actualTypeAtIndex1, short int>::value, "Wrong type at index");
 
 // this gives: "error: implicit instantiation of undefined template 'TypeAt<NullType, 2>'"
 // meaning "out of bound"
-//typedef typename TypeAt<SignedIntegrals, 6>::Result, short int>::value newType,
+//typedef typename TypeAt<SignedIntegrals, 6>::Result newType;
+
+// type at non strict
+typedef typename TypeAtNonStrict<SignedIntegrals, 6, int>::Result actualDefaultType;
+static_assert(is_same<actualDefaultType, int>::value, "Wrong default type");
+
+
 
 int main(void) {
   return 0;
