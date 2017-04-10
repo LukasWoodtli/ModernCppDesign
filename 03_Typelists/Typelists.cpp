@@ -12,6 +12,9 @@ struct Typelist {
 #define TYPELIST_2(T1, T2) Typelist<T1, TYPELIST_1(T2)>
 #define TYPELIST_3(T1, T2, T3) Typelist<T1, TYPELIST_2(T2, T3)>
 #define TYPELIST_4(T1, T2, T3, T4) Typelist<T1, TYPELIST_3(T2, T3, T4)>
+#define TYPELIST_5(T1, T2, T3, T4, T5) Typelist<T1, TYPELIST_4(T2, T3, T4, T5)>
+#define TYPELIST_6(T1, T2, T3, T4, T5, T6) Typelist<T1, TYPELIST_5(T2, T3, T4, T5, T6)>
+#define TYPELIST_7(T1, T2, T3, T4, T5, T6, T7) Typelist<T1, TYPELIST_6(T2, T3, T4, T5, T6, T7)>
 // ....
 
 
@@ -111,6 +114,45 @@ struct Append<Typelist<Head, Tail>, T> {
 	typedef Typelist<Head, typename Append<Tail, T>::Result> Result;
 };
 
+// erasing
+template <class TList, class T>
+struct Erase;
+
+template <class T>
+struct Erase<NullType, T> {
+  typedef NullType Result;
+};
+
+template <class T, class Tail>
+struct Erase<Typelist<T, Tail>, T>{
+  typedef Tail Result;
+};
+
+template <class Head, class Tail, class T>
+struct Erase<Typelist<Head, Tail>, T> {
+  typedef Typelist<Head, typename Erase<Tail, T>::Result> Result;
+};
+
+// erasing all
+template <class TList, class T>
+struct EraseAll;
+
+template <class T>
+struct EraseAll<NullType, T> {
+  typedef NullType Result;
+};
+
+template <class T, class Tail>
+struct EraseAll<Typelist<T, Tail>, T> {
+  // removing all occurences all the way down
+  typedef typename EraseAll<Tail, T>::Result Result;
+};
+
+template <class Head, class Tail, class T>
+struct EraseAll<Typelist<Head, Tail>, T> {
+  typedef Typelist<Head, typename EraseAll<Tail, T>::Result> Result;
+};
+
 /*** Tests **************************/
 
 // comparing types (for testing)
@@ -149,8 +191,21 @@ static_assert(actualIndexOf == 1, "Wrong index for given type");
 typedef Append<SignedIntegrals, TYPELIST_3(float, double, long double)>::Result SignedTypes;
 static_assert(7 == Length<SignedTypes>::value, "Length of typelist not correct");
 
+// erase
+typedef Erase<SignedTypes, float>::Result actualSomeSignedTypes;
+typedef TYPELIST_6(signed char, short int, int, long int, double, long double) expectedSomeSignedTypes;
+static_assert(is_same<actualSomeSignedTypes, expectedSomeSignedTypes>::value, "Erasing didn't work");
+
+
+// erase all
+typedef TYPELIST_4(char, double, char, long double) someOtherSignedTypes;
+typedef EraseAll<someOtherSignedTypes, char>::Result actualSomeOtherSignedTypes;
+typedef TYPELIST_2(double, long double) expectedSomeOtherSignedTypes;
+static_assert(is_same<actualSomeOtherSignedTypes, expectedSomeOtherSignedTypes>::value, "Erasing all didn't work");
+
+
+
 
 int main(void) {
   return 0;
 }
-
