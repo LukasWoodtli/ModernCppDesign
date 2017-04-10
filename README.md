@@ -39,22 +39,22 @@ My playground for the examples of the famous book: ["Modern C++ Design"](http://
 |  2.7    | Detecting Convertibility and Inheritance at Compile Time | ✓ |
 |  2.8    | A Wrapper Around type_info          |   ✓  |
 |  2.9    | NullType and EmptyType              |   ✓  |
-| 2.10    | Type Traits                         |      |
-| 2.11    | Summary                             |      |
+| 2.10    | Type Traits                         |   ✓  |
+| 2.11    | Summary                             |   ✓  |
 
 
 ### Chapter 3. Typelists (p. 76)
 
 | Section | Title                               | Done |
 |---------|-------------------------------------|------|
-| 3.1     | The Need for Typelists              |      |
-| 3.2     | Defining Typelists                  |      |
-| 3.3     | Linearizing Typelist Creation       |      |
-| 3.4     | Calculating Length                  |      |
-| 3.5     | Intermezzo                          |      |
-| 3.6     | Indexed Access                      |      |
-| 3.7     | Searching Typelists                 |      |
-| 3.8     | Appending to Typelists              |      |
+| 3.1     | The Need for Typelists              |   ✓  |
+| 3.2     | Defining Typelists                  |   ✓  |
+| 3.3     | Linearizing Typelist Creation       |   ✓  |
+| 3.4     | Calculating Length                  |   ✓  |
+| 3.5     | Intermezzo                          |   ✓  |
+| 3.6     | Indexed Access                      |   ✓  |
+| 3.7     | Searching Typelists                 |   ✓  |
+| 3.8     | Appending to Typelists              |   ✓  |
 | 3.9     | Erasing a Type from a Typelist      |      |
 | 3.10    | Erasing Duplicates                  |      |
 | 3.11    | Replacing an Element in a Typelist  |      |

@@ -86,6 +86,31 @@ public:
 	enum { value = temp == -1 ? -1 : 1 + temp };
 };
 
+
+// append
+template<class TList, class T>
+struct Append;
+
+template<>
+struct Append<NullType, NullType> {
+	typedef NullType Result;
+};
+
+template<class T>
+struct Append<NullType, T> {
+	typedef TYPELIST_1(T) Result;
+};
+
+template<class Head, class Tail>
+struct Append<NullType, Typelist<Head, Tail>> {
+	typedef Typelist<Head, Tail> Result;
+};
+
+template<class Head, class Tail, class T>
+struct Append<Typelist<Head, Tail>, T> {
+	typedef Typelist<Head, typename Append<Tail, T>::Result> Result;
+};
+
 /*** Tests **************************/
 
 // comparing types (for testing)
@@ -116,12 +141,13 @@ static_assert(is_same<actualTypeAtIndex1, short int>::value, "Wrong type at inde
 typedef typename TypeAtNonStrict<SignedIntegrals, 6, int>::Result actualDefaultType;
 static_assert(is_same<actualDefaultType, int>::value, "Wrong default type");
 
-
 // index of
 enum { actualIndexOf = IndexOf<SignedIntegrals, short int>::value };
 static_assert(actualIndexOf == 1, "Wrong index for given type");
 
-
+// append
+typedef Append<SignedIntegrals, TYPELIST_3(float, double, long double)>::Result SignedTypes;
+static_assert(7 == Length<SignedTypes>::value, "Length of typelist not correct");
 
 
 int main(void) {
