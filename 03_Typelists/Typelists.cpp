@@ -153,6 +153,26 @@ struct EraseAll<Typelist<Head, Tail>, T> {
   typedef Typelist<Head, typename EraseAll<Tail, T>::Result> Result;
 };
 
+
+// erasing duplicates
+template <class TList>
+struct NoDuplicates;
+
+template <>
+struct NoDuplicates<NullType> {
+	typedef NullType Result;
+};
+
+template<class Head, class Tail>
+struct NoDuplicates<Typelist<Head, Tail>> {
+private:
+	typedef typename NoDuplicates<Tail>::Result L1;
+	typedef typename Erase<L1, Head>::Result L2;
+public:
+	typedef Typelist<Head, L2> Result;
+};
+
+
 /*** Tests **************************/
 
 // comparing types (for testing)
@@ -202,6 +222,22 @@ typedef TYPELIST_4(char, double, char, long double) someOtherSignedTypes;
 typedef EraseAll<someOtherSignedTypes, char>::Result actualSomeOtherSignedTypes;
 typedef TYPELIST_2(double, long double) expectedSomeOtherSignedTypes;
 static_assert(is_same<actualSomeOtherSignedTypes, expectedSomeOtherSignedTypes>::value, "Erasing all didn't work");
+
+
+// widget classes
+class Widget {};
+class Button : public Widget {};
+class TextField : public Widget {};
+class ScrollBar : public Widget {};
+
+
+
+// no duplicates
+typedef TYPELIST_7(Widget, Button, Button, Widget, TextField, ScrollBar, Button) someWidgets;
+typedef TYPELIST_4(Widget, Button, TextField, ScrollBar) expectedSomeWidgets;
+typedef NoDuplicates<someWidgets>::Result actualSomeWidgets;
+static_assert(is_same<actualSomeWidgets, expectedSomeWidgets>::value, "Removing duplicates didn't work");
+
 
 
 
