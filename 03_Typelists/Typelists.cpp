@@ -172,6 +172,27 @@ public:
 	typedef Typelist<Head, L2> Result;
 };
 
+// replacing
+template <class TList, class T, class U>
+struct Replace;
+
+template <class T, class U>
+struct Replace<NullType, T, U> {
+	typedef NullType Result;
+};
+
+template <class T, class Tail, class U>
+struct Replace<Typelist<T, Tail>, T, U> {
+	typedef Typelist<U, Tail> Result;
+};
+
+
+template <class Head, class Tail, class T, class U>
+struct Replace<Typelist<Head, Tail>, T, U> {
+	typedef Typelist<Head, typename Replace<Tail, T, U>::Result> Result;
+};
+
+
 
 /*** Tests **************************/
 
@@ -227,6 +248,7 @@ static_assert(is_same<actualSomeOtherSignedTypes, expectedSomeOtherSignedTypes>:
 // widget classes
 class Widget {};
 class Button : public Widget {};
+class GraphicButton : public Button {};
 class TextField : public Widget {};
 class ScrollBar : public Widget {};
 
@@ -238,7 +260,11 @@ typedef TYPELIST_4(Widget, Button, TextField, ScrollBar) expectedSomeWidgets;
 typedef NoDuplicates<someWidgets>::Result actualSomeWidgets;
 static_assert(is_same<actualSomeWidgets, expectedSomeWidgets>::value, "Removing duplicates didn't work");
 
-
+// replace
+typedef TYPELIST_4(Widget, Button, TextField, ScrollBar) someOtherWidgets;
+typedef TYPELIST_4(Widget, GraphicButton, TextField, ScrollBar) expectedSomeOtherWidgets;
+typedef Replace<someOtherWidgets, Button, GraphicButton>::Result actualSomeOtherWidgets;
+static_assert(is_same<expectedSomeOtherWidgets, actualSomeOtherWidgets>::value, "Replacement didn't work");
 
 
 
