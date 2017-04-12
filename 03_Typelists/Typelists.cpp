@@ -1,4 +1,7 @@
 
+#include "../02_Techniques/Convertibility.h"
+
+
 class NullType {};
 
 template <class T, class U>
@@ -214,6 +217,61 @@ struct ReplaceAll<Typelist<Head, Tail>, T, U> {
 	typedef Typelist<Head, typename ReplaceAll<Tail, T, U>::Result> Result;
 };
 
+
+// Select type based on predicate
+template <bool flag, typename T, typename U>
+struct Select {
+	typedef T Result;
+};
+template <typename T, typename U>
+struct Select<false, T, U> {
+        typedef U Result;
+};
+
+// most derived
+template <class TList, class T>
+struct MostDerived;
+
+template <class T>
+struct MostDerived<NullType, T> {
+	typedef T Result;
+};
+
+template <class Head, class Tail, class T>
+struct MostDerived<Typelist<Head, Tail>, T> {
+private:
+	typedef typename MostDerived<Tail, T>::Result Candidate;
+public:
+	typedef typename Select<SUPERSUBCLASS(Candidate, Head), Head, Candidate>::Result Result;
+};
+
+
+// derived to front
+template <class T>
+struct DerivedToFront;
+
+template <>
+struct DerivedToFront<NullType> {
+	typedef NullType Result;
+};
+
+template <class Head, class Tail>
+struct DerivedToFront<Typelist<Head, Tail>> {
+private:
+	typedef typename MostDerived<Tail, Head>::Result TheMostDerived;
+	typedef typename Replace<Tail, TheMostDerived, Head>::Result Temp;
+	typedef typename DerivedToFront<Temp>::Result L;
+
+public:
+	typedef Typelist<TheMostDerived, L> Result;
+
+};
+
+
+
+
+
+
 /*** Tests **************************/
 
 // comparing types (for testing)
@@ -296,6 +354,13 @@ typedef TYPELIST_5(Widget, Button, TextField, ScrollBar, Button) someDuplicateWi
 typedef TYPELIST_5(Widget, GraphicButton, TextField, ScrollBar, GraphicButton) expectedSomeDuplicateWidgets;
 typedef ReplaceAll<someDuplicateWidgets, Button, GraphicButton>::Result actualSomeDuplicateWidgets;
 static_assert(is_same<expectedSomeDuplicateWidgets, actualSomeDuplicateWidgets>::value, "Replacement of all occurences didn't work");
+
+// derived to front
+typedef TYPELIST_4(Widget, ScrollBar, Button, GraphicButton) someUnorderedWidgets;
+typedef TYPELIST_4(GraphicButton, ScrollBar, Button, Widget) expectedOrderedWidgets;
+typedef typename DerivedToFront<someUnorderedWidgets>::Result actualOrderedWidgets;
+static_assert(is_same<expectedOrderedWidgets, actualOrderedWidgets>::value, "Ordering widgets didn't work");
+
 
 
 int main(void) {
