@@ -186,13 +186,33 @@ struct Replace<Typelist<T, Tail>, T, U> {
 	typedef Typelist<U, Tail> Result;
 };
 
-
 template <class Head, class Tail, class T, class U>
 struct Replace<Typelist<Head, Tail>, T, U> {
 	typedef Typelist<Head, typename Replace<Tail, T, U>::Result> Result;
 };
 
 
+// replace all
+template <class TList, class T, class U>
+struct ReplaceAll;
+
+template <class T, class U>
+struct ReplaceAll<NullType, T, U> {
+	typedef NullType Result;
+};
+
+template <class T, class Tail, class U>
+struct ReplaceAll<Typelist<T, Tail>, T, U> {
+private:
+	typedef typename ReplaceAll<Tail, T, U>::Result L1;
+public:
+	typedef Typelist<U, L1> Result;
+};
+
+template <class Head, class Tail, class T, class U>
+struct ReplaceAll<Typelist<Head, Tail>, T, U> {
+	typedef Typelist<Head, typename ReplaceAll<Tail, T, U>::Result> Result;
+};
 
 /*** Tests **************************/
 
@@ -266,6 +286,16 @@ typedef TYPELIST_4(Widget, GraphicButton, TextField, ScrollBar) expectedSomeOthe
 typedef Replace<someOtherWidgets, Button, GraphicButton>::Result actualSomeOtherWidgets;
 static_assert(is_same<expectedSomeOtherWidgets, actualSomeOtherWidgets>::value, "Replacement didn't work");
 
+typedef TYPELIST_5(Widget, Button, TextField, ScrollBar, Button) someMoreWidgets;
+typedef TYPELIST_5(Widget, GraphicButton, TextField, ScrollBar, Button) expectedSomeMoreWidgets;
+typedef Replace<someMoreWidgets, Button, GraphicButton>::Result actualSomeMoreWidgets;
+static_assert(is_same<expectedSomeMoreWidgets, actualSomeMoreWidgets>::value, "Replacement of only first occurence didn't work");
+
+// replace all
+typedef TYPELIST_5(Widget, Button, TextField, ScrollBar, Button) someDuplicateWidgets;
+typedef TYPELIST_5(Widget, GraphicButton, TextField, ScrollBar, GraphicButton) expectedSomeDuplicateWidgets;
+typedef ReplaceAll<someDuplicateWidgets, Button, GraphicButton>::Result actualSomeDuplicateWidgets;
+static_assert(is_same<expectedSomeDuplicateWidgets, actualSomeDuplicateWidgets>::value, "Replacement of all occurences didn't work");
 
 
 int main(void) {
