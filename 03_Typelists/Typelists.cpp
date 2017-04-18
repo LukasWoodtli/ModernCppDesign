@@ -1,5 +1,9 @@
+#include <string>
+
 
 #include "../02_Techniques/Convertibility.h"
+#include "../02_Techniques/Type2Type.h"
+#include "../02_Techniques/Int2Type.h"
 
 
 class NullType {};
@@ -269,8 +273,72 @@ public:
 
 
 
+// Generating Scattered Hierarchies
+
+template <class TList, template <class> class Unit>
+class GenScatterHierarchy;
+
+template <class Head, class Tail, template <class> class Unit>
+class GenScatterHierarchy<Typelist<Head, Tail>, Unit>
+  : public GenScatterHierarchy<Head, Unit>,
+    public GenScatterHierarchy<Tail, Unit> {
+public:
+  typedef Typelist<Head, Tail> TList;
+  typedef GenScatterHierarchy<Head, Unit> LeftBase;
+  typedef GenScatterHierarchy<Tail, Unit> RightBase;
+
+  template <typename T>
+  struct Rebind {
+      typedef Unit<T> Result;
+  };
+};
+
+template <class AtomicType, template <class> class Unit>
+class GenScatterHierarchy : public Unit<AtomicType> {
+  typedef Unit<AtomicType> LeftBase;
+
+  template <typename T>
+  struct Rebind {
+      typedef Unit<T> Result;
+  };
+};
+
+template <template <class> class Unit>
+class GenScatterHierarchy<NullType, Unit> {
+
+  template <typename T>
+  struct Rebind {
+      typedef Unit<T> Result;
+  };
+};
+
+template <class T, class H>
+typename H::template Rebind<T>::Result& Field(H& obj) {
+    return obj;
+}
+
+template <class T, class H>
+typename H::template Rebind<T>::Result& Field(const H& obj) {
+    return obj;
+}
 
 
+// ...
+template <class H, typename R>
+inline R& FieldHelper(H& obj, Type2Type<R>, Int2Type<0>) {
+  typename H::LeftBase& subobj = obj;
+  return subobj;
+}
+
+template <class H, typename R, int i>
+inline R& FieldHelper(H& obj, Type2Type<R> tt, Int2Type<i>) {
+  typename H::RightBase& subobj = obj;
+  return FieldHelper(subobj, tt, Int2Type<i - 1>());
+}
+
+/*template <int i, class H>
+typename FieldHelper<>
+*/
 
 /*** Tests **************************/
 
@@ -361,8 +429,21 @@ typedef TYPELIST_4(GraphicButton, ScrollBar, Button, Widget) expectedOrderedWidg
 typedef typename DerivedToFront<someUnorderedWidgets>::Result actualOrderedWidgets;
 static_assert(is_same<expectedOrderedWidgets, actualOrderedWidgets>::value, "Ordering widgets didn't work");
 
+// scattered hierarchy
+template <class T>
+struct Holder {
+  T value_;
+};
+
+typedef GenScatterHierarchy<TYPELIST_3(int, std::string, Widget), Holder> WidgetInfo;
+
 
 
 int main(void) {
+  // scattered hierarchy
+  WidgetInfo obj;
+  std::string name = (static_cast<Holder<std::string>&>(obj)).value_;
+  //name = Field<std::string>(obj);
+
   return 0;
 }
