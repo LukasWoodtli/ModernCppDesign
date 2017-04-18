@@ -44,27 +44,15 @@ Widget * Create2(const U& arg, Widget /* dummy */) {
 }
 
 
-// 3.) Type2Type implementation
-template <typename T>
-struct Type2Type {
-    typedef T OriginalType;
-};
+// 3.) Type2Type implementation (see header)
+#include "Type2Type.h"
 
-template <class T, class U>
-T* Create3(const U& arg, Type2Type<T>) {
-    return new T(arg);
-}
-
-template <class U>
-Widget* Create3(const U& arg, Type2Type<Widget>) {
-    return new Widget(arg, -1);
-}
 
 int main(void) {
   // 2.)
   Gadget * myGadget2 = Create2(1, Gadget(2)); // the Gadget as argument is not used (dummy)
     (void)myGadget2;
-    
+
   Widget* myWidget2 = Create2(3, Widget(4, 5)); // the Widget as argument is not used (dummy)
     (void)myWidget2;
 
@@ -72,11 +60,11 @@ int main(void) {
   // 3.)
   Gadget * myGadget3 = Create3(6, Type2Type<Gadget>());
   (void)myGadget3;
-    
-    
+
+
   Widget* myWidget3 = Create3(7, Type2Type<Widget>());
   (void)myWidget3;
-  
-    
+
+
   return 0;
 }
