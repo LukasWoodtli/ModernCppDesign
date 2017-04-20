@@ -443,7 +443,8 @@ int main(void) {
   // scattered hierarchy
   WidgetInfo obj;
   std::string name = (static_cast<Holder<std::string>&>(obj)).value_;
-  Holder<int> i = Field<int>(obj);
+  name = Field<std::string>(obj).value_;
+  int i = Field<int>(obj).value_;
   (void)i;
 
   return 0;
