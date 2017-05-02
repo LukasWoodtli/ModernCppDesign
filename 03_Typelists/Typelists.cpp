@@ -317,13 +317,10 @@ typename H::template Rebind<T>::Result& Field(H& obj) {
     return obj;
 }
 
-template <class T, class H>
-typename H::template Rebind<T>::Result& Field(const H& obj) {
-    return obj;
-}
 
 
-// ...
+
+// Index based access
 template <class H, typename R>
 inline R& FieldHelper(H& obj, Type2Type<R>, Int2Type<0>) {
   typename H::LeftBase& subobj = obj;
@@ -336,9 +333,7 @@ inline R& FieldHelper(H& obj, Type2Type<R> tt, Int2Type<i>) {
   return FieldHelper(subobj, tt, Int2Type<i - 1>());
 }
 
-/*template <int i, class H>
-typename FieldHelper<>
-*/
+//...
 
 /*** Tests **************************/
 
@@ -436,6 +431,7 @@ struct Holder {
 };
 
 typedef GenScatterHierarchy<TYPELIST_3(int, std::string, Widget), Holder> WidgetInfo;
+typedef GenScatterHierarchy<TYPELIST_3(int, int, std::string), Holder> WidgetInfoMultipleInts;
 
 
 
@@ -446,6 +442,14 @@ int main(void) {
   name = Field<std::string>(obj).value_;
   int i = Field<int>(obj).value_;
   (void)i;
+
+  WidgetInfoMultipleInts multipleInts;
+  //int i = Field<int>(multipleInts).value_; // this is not working: ambiguity
+
+  /* TODO
+  int x = Field<0>(obj).value_; // first int
+  int y = Field<1>(obj).value_; // second int
+  */
 
   return 0;
 }
