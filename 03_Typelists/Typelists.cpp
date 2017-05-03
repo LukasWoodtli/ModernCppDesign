@@ -321,19 +321,41 @@ typename H::template Rebind<T>::Result& Field(H& obj) {
 
 
 // Index based access
-template <class H, typename R>
-inline R& FieldHelper(H& obj, Type2Type<R>, Int2Type<0>) {
-  typename H::LeftBase& subobj = obj;
-  return subobj;
+template <class H, unsigned int i> struct FieldHelper;
+    
+template <class H>
+struct FieldHelper<H, 0>
+{
+        typedef typename H::TList::Head ElementType;
+        typedef typename H::template Rebind<ElementType>::Result ResultType;
+        
+        static ResultType& Do(H& obj)
+        {
+            typename H::LeftBase& leftBase = obj;
+            return leftBase;
+        }
+};
+
+template <class H, unsigned int i>
+struct FieldHelper
+{
+        typedef typename TypeAt<typename H::TList, i>::Result ElementType;
+        typedef typename H::template Rebind<ElementType>::Result ResultType;
+        
+        static ResultType& Do(H& obj)
+        {
+    	typename H::RightBase& rightBase = obj;
+            return FieldHelper<typename H::RightBase, i - 1>::Do(rightBase);
+        }
+    };
+
+template <int i, class H>
+typename FieldHelper<H, i>::ResultType&
+Field(H& obj) {
+    return FieldHelper<H, i>::Do(obj);
 }
 
-template <class H, typename R, int i>
-inline R& FieldHelper(H& obj, Type2Type<R> tt, Int2Type<i>) {
-  typename H::RightBase& subobj = obj;
-  return FieldHelper(subobj, tt, Int2Type<i - 1>());
-}
 
-//...
 
 /*** Tests **************************/
 
@@ -431,7 +453,7 @@ struct Holder {
 };
 
 typedef GenScatterHierarchy<TYPELIST_3(int, std::string, Widget), Holder> WidgetInfo;
-typedef GenScatterHierarchy<TYPELIST_3(int, int, std::string), Holder> WidgetInfoMultipleInts;
+typedef GenScatterHierarchy<TYPELIST_4(int, int, int, std::string), Holder> WidgetInfoMultipleInts;
 
 
 
@@ -446,10 +468,8 @@ int main(void) {
   WidgetInfoMultipleInts multipleInts;
   //int i = Field<int>(multipleInts).value_; // this is not working: ambiguity
 
-  /* TODO
-  int x = Field<0>(obj).value_; // first int
-  int y = Field<1>(obj).value_; // second int
-  */
+  int x = Field<0>(multipleInts).value_; // first int
+//  int y = Field<1>(multipleInts).value_; // second int
 
   return 0;
 }
