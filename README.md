@@ -58,10 +58,10 @@ My playground for the examples of the famous book: ["Modern C++ Design"](http://
 | 3.9     | Erasing a Type from a Typelist      |   ✓  |
 | 3.10    | Erasing Duplicates                  |   ✓  |
 | 3.11    | Replacing an Element in a Typelist  |   ✓  |
-| 3.12    | Partially Ordering Typelists        |      |
-| 3.13    | Class Generation with Typelists     |      |
-| 3.14    | Summary                             |      |
-| 3.15    | Typelist Quick Facts                |      |
+| 3.12    | Partially Ordering Typelists        |   ✓  |
+| 3.13    | Class Generation with Typelists     |   ✓  |
+| 3.14    | Summary                             |   ✓  |
+| 3.15    | Typelist Quick Facts                |   ✓  |
 
 
 ### Chapter 4. Small-Object Allocation (p. 104)
