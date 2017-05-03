@@ -7,6 +7,7 @@
 
 
 class NullType {};
+class EmptyType {};
 
 template <class T, class U>
 struct Typelist {
@@ -335,6 +336,30 @@ inline R& FieldHelper(H& obj, Type2Type<R> tt, Int2Type<i>) {
 
 //...
 
+
+// GenLinearHierarchy
+template<class TList, 
+	template <class AtomicType, class Base> class Unit,
+	class Root = EmptyType>
+class GenLinearHierarchy;
+
+template<class T1,
+         class T2,
+         template <class, class> class Unit,
+         class Root>
+class GenLinearHierarchy<Typelist<T1, T2>, Unit, Root> : public Unit<T1, GenLinearHierarchy<T2, Unit, Root>>
+{
+};
+
+template<class T,
+         template <class, class> class Unit,
+         class Root>
+class GenLinearHierarchy<TYPELIST_1(T), Unit, Root> : public Unit<T, Root>
+{
+};
+
+
+
 /*** Tests **************************/
 
 // comparing types (for testing)
@@ -432,6 +457,15 @@ struct Holder {
 
 typedef GenScatterHierarchy<TYPELIST_3(int, std::string, Widget), Holder> WidgetInfo;
 typedef GenScatterHierarchy<TYPELIST_3(int, int, std::string), Holder> WidgetInfoMultipleInts;
+
+// linear hierarchy
+template <class T, class Base>
+class EventHandler : public Base {
+public:
+	virtual void OnEvent(T& obj, int evcentId);
+};
+
+typedef GenLinearHierarchy<TYPELIST_3(TextField, Button, ScrollBar), EventHandler> WidgetEventHandler;
 
 
 
