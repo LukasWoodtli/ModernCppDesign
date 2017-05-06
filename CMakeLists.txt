@@ -5,7 +5,8 @@ project(ModernCppDesign)
 set(CMAKE_VERBOSE_MAKEFILE OFF)
 set(CMAKE_COLOR_MAKEFILE   ON)
 
-set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-W -Wall -Wextra  -Werror -std=c++11 -fsanitize=address -fno-omit-frame-pointer")
+set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} "-W -Wall -Wextra  -Werror -std=c++11") 
+# these are not working on travis.ci -fsanitize=address -fno-omit-frame-pointer
 
 
 if(NOT CMAKE_BUILD_TYPE)
