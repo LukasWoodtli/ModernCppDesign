@@ -20,4 +20,4 @@ add_subdirectory("01_Policy_Based_Class_Design")
 add_subdirectory("02_Techniques")
 add_subdirectory("03_Typelists")
 add_subdirectory("04_SmallObjectAllocation")
-
+add_subdirectory("05_Functors")

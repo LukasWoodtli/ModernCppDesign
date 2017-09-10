@@ -84,24 +84,24 @@ My playground for the examples of the famous book: ["Modern C++ Design"](http://
 
 ### Chapter 5. Generalized Functors (p. 128)
 
-| Section   | Title                                                 | Done      |
-|-----------|-------------------------------------------------------|-----------|
-| 5.1       | The Command Design Pattern                            |           |
-| 5.2       | Command in the Real World                             |           |
-| 5.3       | C++ Callable Entities                                 |           |
-| 5.4       | The Functor Class Template Skeleton                   |           |
-| 5.5       | Implementing the Forwarding Functor::operator()       |           |
-| 5.6       | Handling Functors                                     |           |
-| 5.7       | Build One, Get One Free                               |           |
-| 5.8       | Argument and Return Type Conversions                  |           |
-| 5.9       | Handling Pointers to Member Functions                 |           |
-| 5.10      | Binding                                               |           |
-| 5.11      | Chaining Requests                                     |           |
-| 5.12      | Real-World Issues I: The Cost of Forwarding Functions |           |
-| 5.13      | Real-World Issues II: Heap Allocation                 |           |
-| 5.14      | Implementing Undo and Redo with Functor               |           |
-| 5.15      | Summary                                               |           |
-| 5.16      | Functor Quick Facts                                   |           |
+| Section   | Title                                                 | Done |
+|-----------|-------------------------------------------------------|------|
+| 5.1       | The Command Design Pattern                            |   ✓  |
+| 5.2       | Command in the Real World                             |   ✓  |
+| 5.3       | C++ Callable Entities                                 |   ✓  |
+| 5.4       | The Functor Class Template Skeleton                   |   ✓  |
+| 5.5       | Implementing the Forwarding Functor::operator()       |   ✓  |
+| 5.6       | Handling Functors                                     |      |
+| 5.7       | Build One, Get One Free                               |      |
+| 5.8       | Argument and Return Type Conversions                  |      |
+| 5.9       | Handling Pointers to Member Functions                 |      |
+| 5.10      | Binding                                               |      |
+| 5.11      | Chaining Requests                                     |      |
+| 5.12      | Real-World Issues I: The Cost of Forwarding Functions |      |
+| 5.13      | Real-World Issues II: Heap Allocation                 |      |
+| 5.14      | Implementing Undo and Redo with Functor               |      |
+| 5.15      | Summary                                               |      |
+| 5.16      | Functor Quick Facts                                   |      |
 
 
 ### Chapter 6. Implementing Singletons (p. 161)
