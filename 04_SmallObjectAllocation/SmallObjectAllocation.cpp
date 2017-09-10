@@ -3,6 +3,9 @@
 #include <assert.h>
 #include <vector>
 
+/* This file contains only partly implemented classes
+   Check the code of Loki for full implementation */
+
 /********* Chunks ***********************************/
 
 // POD: no ctor...
@@ -59,7 +62,7 @@ public:
 // ...
 
   void* Allocate();
-
+  void Deallocate(void* p, std::size_t size);
 
 private:
   std::size_t blockSize_;
@@ -100,6 +103,79 @@ void* FixedAllocator::Allocate() {
   return allocChunk_->Allocate(blockSize_);
 }
 
+
+
+
+/********* Small-Obj Allocator ***********************************/
+
+class SmallObjAllocator {
+public:
+  SmallObjAllocator(std::size_t chunkSize,
+                    std::size_t maxObjectSize);
+  
+  void* Allocate(std::size_t numBytes);
+  void Deallocate(void* p, std::size_t numBytes);
+
+  // ...
+
+private:
+  std::vector<FixedAllocator> pool_;
+  //FixedAllocator* pLastAlloc_;
+  //FixedAllocator* pLastDealloc_;
+
+  // ...
+};
+
+SmallObjAllocator::SmallObjAllocator(std::size_t chunkSize,
+  std::size_t maxObjectSize) {
+    (void)chunkSize;
+    (void)maxObjectSize;
+    // ...
+  }
+
+void* SmallObjAllocator::Allocate(std::size_t numBytes) {
+  (void)numBytes;
+  return NULL;
+}
+
+void SmallObjAllocator::Deallocate(void* p, std::size_t numBytes) {
+  (void)p;
+  (void)numBytes;
+}
+
+/********* Small-Object ******************************************/
+
+template<template<class T> class ThreadingModel>
+class SmallObject : public ThreadingModel<SmallObject<ThreadingModel>> {
+public:
+  static void* operator new(std::size_t size);
+  static void operator delete(void* p, std::size_t size);
+
+  virtual ~SmallObject() {}
+};
+
+// Dummy
+template<typename T>
+struct SingletonHolder {
+  static T &Instance() {
+    static T inst(10, 10);
+    return inst;
+  }
+};
+
+typedef SingletonHolder<SmallObjAllocator> MyAlloc;
+
+template<template<class> class ThreadingModel>
+void* SmallObject<ThreadingModel>::operator new(std::size_t size) {
+  typename ThreadingModel<SmallObject>::Lock lock;
+  return MyAlloc::Instance().Allocate(size);
+}
+
+template<template<class> class ThreadingModel>
+void SmallObject<ThreadingModel>::operator delete(void* p, std::size_t size) {
+  typename ThreadingModel<SmallObject>::Lock lock;
+  return MyAlloc::Instance().Deallocate(p, size);
+}
 
 
 int main() {
