@@ -68,17 +68,17 @@ My playground for the examples of the famous book: ["Modern C++ Design"](http://
 
 | Section | Title                                      | Done |
 |---------|--------------------------------------------|------|
-| 4.1     | The Default Free Store Allocator           |      |
-| 4.2     | The Workings of a Memory Allocator         |      |
-| 4.3     | A Small-Object Allocator                   |      |
-| 4.4     | Chunks                                     |      |
-| 4.5     | The Fixed-Size Allocator                   |      |
-| 4.6     | The SmallObjAllocator Class                |      |
-| 4.7     | A Hat Trick                                |      |
-| 4.8     | Simple, Complicated, Yet Simple in the End |      |
-| 4.9     | Administrivia                              |      |
-| 4.10    | Summary                                    |      |
-| 4.11    | Small-Object Allocator Quick Facts         |      |
+| 4.1     | The Default Free Store Allocator           |   ✓  |
+| 4.2     | The Workings of a Memory Allocator         |   ✓  |
+| 4.3     | A Small-Object Allocator                   |   ✓  |
+| 4.4     | Chunks                                     |   ✓  |
+| 4.5     | The Fixed-Size Allocator                   |   ✓  |
+| 4.6     | The SmallObjAllocator Class                |   ✓  |
+| 4.7     | A Hat Trick                                |   ✓  |
+| 4.8     | Simple, Complicated, Yet Simple in the End |   ✓  |
+| 4.9     | Administrivia                              |   ✓  |
+| 4.10    | Summary                                    |   ✓  |
+| 4.11    | Small-Object Allocator Quick Facts         |   ✓  |
 
 ## Part II: Components
 
