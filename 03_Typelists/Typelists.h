@@ -58,8 +58,10 @@ struct TypeAt<Typelist<Head, Tail>, i> {
 };
 
 // TypeAtNonStrict
-template <class TList, unsigned int index, class Default>
-struct TypeAtNonStrict;
+template <class TList, unsigned int index, class Default = NullType>
+struct TypeAtNonStrict {
+  typedef Default Result;
+};
 
 template <class Head, class Tail, class Default>
 struct TypeAtNonStrict<Typelist<Head, Tail>, 0, Default> {
@@ -71,10 +73,6 @@ struct TypeAtNonStrict<Typelist<Head, Tail>, i, Default> {
   typedef typename TypeAtNonStrict<Tail, i - 1, Default>::Result Result;
 };
 
-template <class Head, unsigned int i, class Default>
-struct TypeAtNonStrict<Typelist<Head, NullType>, i, Default> {
-  typedef Default Result;
-};
 
 
 // IndexOf

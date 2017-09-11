@@ -91,8 +91,8 @@ My playground for the examples of the famous book: ["Modern C++ Design"](http://
 | 5.3       | C++ Callable Entities                                 |   ✓  |
 | 5.4       | The Functor Class Template Skeleton                   |   ✓  |
 | 5.5       | Implementing the Forwarding Functor::operator()       |   ✓  |
-| 5.6       | Handling Functors                                     |      |
-| 5.7       | Build One, Get One Free                               |      |
+| 5.6       | Handling Functors                                     |   ✓  |
+| 5.7       | Build One, Get One Free                               |   ✓  |
 | 5.8       | Argument and Return Type Conversions                  |      |
 | 5.9       | Handling Pointers to Member Functions                 |      |
 | 5.10      | Binding                                               |      |
