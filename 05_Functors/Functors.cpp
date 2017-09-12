@@ -155,6 +155,12 @@ void TestFunctionOverloaded(int i, int i2) {
 
 }
 
+
+const char * TestFunctionConversion(double, double) {
+   static const char buffer[] = "Hello, world!";
+   return buffer;
+}
+
 int main(void) {
     
     // functors
@@ -181,6 +187,11 @@ int main(void) {
     // Method 2: cast
     Functor<void, TYPELIST_2(int, double)> cmd3_2(static_cast<TpFun>(TestFunctionOverloaded));
     cmd3_2(4, 4.5);
+
+
+    // automatic conversion
+    Functor<std::string, TYPELIST_2(int, int)> cmd4(&TestFunctionConversion);
+    std::cout << cmd4(10, 10).substr(7) << std::endl; // call substing to show that it's a std::string
 
     return 0;
 }
