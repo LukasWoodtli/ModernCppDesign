@@ -35,7 +35,7 @@ public:
 // ... in C++11 and onward variadic templates should be used
 
 
-template <typename R, class TList>
+template <typename R, class TList = NullType>
 class Functor  {
 public:
     typedef R ResultType;
@@ -57,6 +57,8 @@ public:
     template <class Fun>
     Functor(const Fun& fun);
 
+    template <class PtrObj, typename MemFn>
+    Functor(const PtrObj& p, MemFn memFn);
 
     /* implementing all of these overloaded functions work due to a trick:
     "The trick relies on the fact that C++ does not instantiate member 
@@ -127,6 +129,43 @@ Functor<R, TList>::Functor(const Fun& fun)
 
 
 
+template <class ParentFunctor, typename PointerToObj, typename PointerToMemFn>
+class MemFunHandler : public FunctorImpl <typename ParentFunctor::ResultType,
+                                   typename ParentFunctor::ParamList>
+{
+public:
+    typedef typename ParentFunctor::ResultType ResultType;
+
+    MemFunHandler(const PointerToObj& pObj, PointerToMemFn pMemFn)
+        : pObj_(pObj), pMemFn_(pMemFn) {}
+
+    MemFunHandler* Clone() const {return new MemFunHandler(*this);}
+
+    ResultType operator()() {
+        return ((*pObj_).*pMemFn_)();
+    }
+
+    ResultType operator()(typename ParentFunctor::Param1 p1) {
+        return ((*pObj_).*pMemFn_)(p1);
+    }
+
+    ResultType operator()(typename ParentFunctor::Param1 p1,
+                          typename ParentFunctor::Param2 p2) {
+        return ((*pObj_).*pMemFn_)(p1, p2);
+    }
+
+private:
+    PointerToObj pObj_;
+    PointerToMemFn pMemFn_;
+};
+
+
+template <typename R, class TList> // stands for the class template Functor
+template <class PtrObj, typename MemFn>
+Functor<R, TList>::Functor(const PtrObj& p, MemFn memFn)
+    : upImpl_(new MemFunHandler<Functor, PtrObj, MemFn>(p, memFn))
+{}
+
 
 // Tests ////////////////////////////////////////////
 struct TestFunctor {
@@ -161,6 +200,19 @@ const char * TestFunctionConversion(double, double) {
    return buffer;
 }
 
+
+class Parrot {
+public:
+    void Eat() {
+        std::cout << "Tsk, knick, tsk...\n";
+    }
+
+    void Speak() {
+        std::cout << "Oh Captain, my Captain!\n";
+    }
+};
+
+
 int main(void) {
     
     // functors
@@ -192,6 +244,30 @@ int main(void) {
     // automatic conversion
     Functor<std::string, TYPELIST_2(int, int)> cmd4(&TestFunctionConversion);
     std::cout << cmd4(10, 10).substr(7) << std::endl; // call substing to show that it's a std::string
+
+
+    // Pointers to memberfunctions (general)
+    typedef void (Parrot::* TpMemFun)();
+    TpMemFun pActivity = &Parrot::Eat;
+
+    Parrot geronimo;
+    Parrot* pGeronimo = &geronimo;
+
+    // invoke (pointer)
+    (pGeronimo->*pActivity)();
+    // change activity
+    pActivity = &Parrot::Speak;
+    // invoke (pointer)
+    (pGeronimo->*pActivity)();
+    // invoke (object)
+    (geronimo.*pActivity)();
+
+
+    // Functor with pointer to member function
+    Functor<void> cmd5_1(&geronimo, &Parrot::Eat), cmd5_2(&geronimo, &Parrot::Speak);
+    // invoke
+    cmd5_1();
+    cmd5_2();
 
     return 0;
 }
