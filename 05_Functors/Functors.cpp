@@ -167,6 +167,62 @@ Functor<R, TList>::Functor(const PtrObj& p, MemFn memFn)
 {}
 
 
+// Binding
+
+template <class Incoming>
+class BinderFirst : public FunctorImpl<typename Incoming::ResultType,
+                                       typename Incoming::ParamList::Tail> {
+
+    typedef Functor<typename Incoming::ResultType,
+                    typename Incoming::ParamList::Tail> Outgoing;
+    typedef typename Incoming::Param1 Bound;
+    typedef typename Incoming::ResultType ResultType;
+
+public:
+    BinderFirst(const Incoming& fun, Bound bound)
+        : fun_(fun), bound_(bound) {}
+
+    BinderFirst* Clone() const {return new BinderFirst(*this);}
+
+    ResultType operator()() {
+        return fun_(bound_);
+    }
+    
+    ResultType operator()(typename Outgoing::Param1 p1) {
+        return fun_(bound_, p1);
+    }
+
+    ResultType operator()(typename Outgoing::Param1 p1,
+                          typename Outgoing::Param2 p2) {
+        return fun_(bound_, p1, p2);
+    }
+
+private:
+    Incoming fun_;
+    Bound bound_;
+};
+
+
+template <class Fctor> struct BinderFirstTraits;
+
+template <typename R, class TList>
+struct BinderFirstTraits<Functor<R, TList>> {
+    typedef typename Erase<TList, 
+        typename TypeAt<TList, 0>::Result>::Result ParmList;
+        typedef Functor<R, ParmList> BoundFunctorType;
+        typedef typename BoundFunctorType::Impl Impl;
+};        
+
+
+template <class Fctor>
+typename BinderFirstTraits<Fctor>::BoundFunctorType
+BindFirst(const Fctor& fun, typename Fctor::Param1 bound) {
+    typedef typename BinderFirstTraits<Fctor>::BoundFunctorType Outgoing;
+    return Outgoing(std::unique_ptr<typename Outgoing::Impl>(
+        new BinderFirst<Fctor>(fun, bound)));
+}
+
+
 // Tests ////////////////////////////////////////////
 struct TestFunctor {
     void operator()(int i, double d) {
