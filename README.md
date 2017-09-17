@@ -95,7 +95,7 @@ My playground for the examples of the famous book: ["Modern C++ Design"](http://
 | 5.7       | Build One, Get One Free                               |   ✓  |
 | 5.8       | Argument and Return Type Conversions                  |   ✓  |
 | 5.9       | Handling Pointers to Member Functions                 |   ✓  |
-| 5.10      | Binding                                               |      |
+| 5.10      | Binding                                               |   ✓  |
 | 5.11      | Chaining Requests                                     |      |
 | 5.12      | Real-World Issues I: The Cost of Forwarding Functions |      |
 | 5.13      | Real-World Issues II: Heap Allocation                 |      |

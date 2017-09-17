@@ -3,32 +3,42 @@
 
 #include "../03_Typelists/Typelists.h"
 
+template <typename R>
+struct FunctorImplBase {
+    typedef R ResultType;
+
+    virtual FunctorImplBase* DoClone() const = 0;
+
+    template<class U>
+    static U* Clone(U* pObj) {
+        if (!pObj) return NULL;
+        U* pClone = static_cast<U*>(pObj->DoClone());
+        return pClone;
+    }
+};
 
 // FunctorImpl defines a polymorphic interface that abstracts a function call.
 template <typename ResultType, class TList>
 class FunctorImpl;
 
 template <typename R>
-class FunctorImpl<R, NullType> {
+class FunctorImpl<R, NullType> : public FunctorImplBase<R> {
 public:
     virtual R operator() () = 0;
-    virtual FunctorImpl* Clone() const = 0;
     virtual ~FunctorImpl() {}
 };
 
 template <typename R, typename P1>
-class FunctorImpl<R, TYPELIST_1(P1)> {
+class FunctorImpl<R, TYPELIST_1(P1)> : public FunctorImplBase<R> {
 public:
     virtual R operator() (P1) = 0;
-    virtual FunctorImpl* Clone() const = 0;
     virtual ~FunctorImpl() {}
 };
 
 template <typename R, typename P1, typename P2>
-class FunctorImpl<R, TYPELIST_2(P1, P2)> {
+class FunctorImpl<R, TYPELIST_2(P1, P2)> : public FunctorImplBase<R>  {
 public:
     virtual R operator() (P1, P2) = 0;
-    virtual FunctorImpl* Clone() const = 0;
     virtual ~FunctorImpl() {}
 };
 
@@ -50,9 +60,13 @@ public:
 
 
     Functor();
-    Functor(const Functor&);
+    
+    Functor(const Functor& rhs) : upImpl_(Impl::Clone(rhs.upImpl_.get()))
+    {}
+    
     Functor& operator=(const Functor&);
-    explicit Functor(std::unique_ptr<Impl> upImpl);
+
+    Functor(std::unique_ptr<Impl> upImpl) : upImpl_(std::move(upImpl)){}
 
     template <class Fun>
     Functor(const Fun& fun);
@@ -99,6 +113,8 @@ public:
         return new FunctorHandler(*this);
     }
 
+    virtual FunctorHandler* DoClone() const { return new FunctorHandler(*this); }
+
     ResultType operator() () {
         return fun_();
     }
@@ -139,8 +155,8 @@ public:
     MemFunHandler(const PointerToObj& pObj, PointerToMemFn pMemFn)
         : pObj_(pObj), pMemFn_(pMemFn) {}
 
-    MemFunHandler* Clone() const {return new MemFunHandler(*this);}
-
+    virtual MemFunHandler* DoClone() const { return new MemFunHandler(*this); }
+    
     ResultType operator()() {
         return ((*pObj_).*pMemFn_)();
     }
@@ -182,7 +198,8 @@ public:
     BinderFirst(const Incoming& fun, Bound bound)
         : fun_(fun), bound_(bound) {}
 
-    BinderFirst* Clone() const {return new BinderFirst(*this);}
+
+    virtual BinderFirst* DoClone() const { return new BinderFirst(*this); }
 
     ResultType operator()() {
         return fun_(bound_);
@@ -196,6 +213,12 @@ public:
                           typename Outgoing::Param2 p2) {
         return fun_(bound_, p1, p2);
     }
+
+    ResultType operator()(typename Outgoing::Param1 p1,
+                          typename Outgoing::Param2 p2,
+                          typename Outgoing::Param3 p3) {
+        return fun_(bound_, p1, p2, p3);
+}
 
 private:
     Incoming fun_;
@@ -269,6 +292,11 @@ public:
 };
 
 
+const char* Fun(int i, int j) {
+    std::cout << "Fun(" << i << "," << j <<") called\n";
+    return "0";
+}
+
 int main(void) {
     
     // functors
@@ -324,6 +352,12 @@ int main(void) {
     // invoke
     cmd5_1();
     cmd5_2();
+
+
+    // binding
+    Functor<const char*, TYPELIST_2(char, int)> f1(&Fun);
+    Functor<std::string, TYPELIST_1(double)> f2(BindFirst(f1, 10));
+    f2(15);
 
     return 0;
 }
