@@ -96,31 +96,31 @@ My playground for the examples of the famous book: ["Modern C++ Design"](http://
 | 5.8       | Argument and Return Type Conversions                  |   ✓  |
 | 5.9       | Handling Pointers to Member Functions                 |   ✓  |
 | 5.10      | Binding                                               |   ✓  |
-| 5.11      | Chaining Requests                                     |      |
-| 5.12      | Real-World Issues I: The Cost of Forwarding Functions |      |
-| 5.13      | Real-World Issues II: Heap Allocation                 |      |
-| 5.14      | Implementing Undo and Redo with Functor               |      |
-| 5.15      | Summary                                               |      |
-| 5.16      | Functor Quick Facts                                   |      |
+| 5.11      | Chaining Requests                                     |   ✓  |
+| 5.12      | Real-World Issues I: The Cost of Forwarding Functions |   ✓  |
+| 5.13      | Real-World Issues II: Heap Allocation                 |   ✓  |
+| 5.14      | Implementing Undo and Redo with Functor               |   ✓  |
+| 5.15      | Summary                                               |   ✓  |
+| 5.16      | Functor Quick Facts                                   |   ✓  |
 
 
 ### Chapter 6. Implementing Singletons (p. 161)
 
-| Section   | Title                                                                 | Done      |
-|-----------|-----------------------------------------------------------------------|-----------|
-| 6.1       | Static Data + Static Functions != Singleton                           |           |
-| 6.2       | The Basic C++ Idioms Supporting Singletons                            |           |
-| 6.3       | Enforcing the Singleton's Uniqueness                                  |           |
-| 6.4       | Destroying the Singleton                                              |           |
-| 6.5       | The Dead Reference Problem                                            |           |
-| 6.6       | Addressing the Dead Reference Problem (I): The Phoenix Singleton      |           |
-| 6.7       | Addressing the Dead Reference Problem (II): Singletons with Longevity |           |
-| 6.8       | Implementing Singletons with Longevity                                |           |
-| 6.9       | Living in a Multithreaded World                                       |           |
-| 6.10      | Putting It All Together                                               |           |
-| 6.11      | Working with SingletonHolder                                          |           |
-| 6.12      | Summary                                                               |           |
-| 6.13      | SingletonHolder Class Template Quick Facts                            |           |
+| Section   | Title                                                                 | Done |
+|-----------|-----------------------------------------------------------------------|------|
+| 6.1       | Static Data + Static Functions != Singleton                           |   ✓  |
+| 6.2       | The Basic C++ Idioms Supporting Singletons                            |   ✓  |
+| 6.3       | Enforcing the Singleton's Uniqueness                                  |   ✓  |
+| 6.4       | Destroying the Singleton                                              |   ✓  |
+| 6.5       | The Dead Reference Problem                                            |   ✓  |
+| 6.6       | Addressing the Dead Reference Problem (I): The Phoenix Singleton      |   ✓  |
+| 6.7       | Addressing the Dead Reference Problem (II): Singletons with Longevity |   ✓  |
+| 6.8       | Implementing Singletons with Longevity                                |      |
+| 6.9       | Living in a Multithreaded World                                       |      |
+| 6.10      | Putting It All Together                                               |      |
+| 6.11      | Working with SingletonHolder                                          |      |
+| 6.12      | Summary                                                               |      |
+| 6.13      | SingletonHolder Class Template Quick Facts                            |      |
 
 
 ### Chapter 7. Smart Pointers (p. 193)
