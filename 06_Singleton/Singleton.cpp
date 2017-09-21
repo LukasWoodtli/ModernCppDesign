@@ -1,6 +1,7 @@
 #include <cstdlib>
 #include <new>
 #include <algorithm>
+#include <cassert>
 
 namespace Private {
 class LifetimeTracker {
@@ -9,7 +10,7 @@ public:
 
 	virtual ~LifetimeTracker() = 0;
 
-	friend inline bool Compare(unsigned int longevity,
+	static bool Compare(unsigned int longevity,
 				  const LifetimeTracker* p) {
 		return p->longevity_ < longevity;
 	}
@@ -24,8 +25,8 @@ LifetimeTracker::~LifetimeTracker() {}
 
 
 typedef LifetimeTracker** TrackerArray;
-extern TrackerArray pTrackerArray;
-extern unsigned int elements;
+TrackerArray pTrackerArray;
+unsigned int elements;
 
 template <typename T>
 struct Deleter {
@@ -54,10 +55,17 @@ private:
 
 void AtExitFn();
 
+
+
+}
+
+
 template <typename T, typename Destroyer>
 void SetLongevity(T* pDynObject, unsigned int longevity,
 		Destroyer d = Private::Deleter<T>::Delete) {
-	
+    
+    using namespace Private;
+            
 	TrackerArray pNewArray = static_cast<TrackerArray>(
 			std::realloc(pTrackerArray,
 				sizeof(*pTrackerArray) * (elements + 1)));
@@ -66,19 +74,23 @@ void SetLongevity(T* pDynObject, unsigned int longevity,
 	pTrackerArray = pNewArray;
 	LifetimeTracker* p = new ConcreteLifetimeTracker<T, Destroyer>(pDynObject,
 			longevity, d);
-	TrackerArray pos = std::upper_bound(pTrackerArray, pTrackerArray + elements, longevity, &LifetimeTracker::Compare);
+	TrackerArray pos = std::upper_bound(pTrackerArray, pTrackerArray + elements, longevity, LifetimeTracker::Compare);
 	std::copy_backward(pos, pTrackerArray + elements, pTrackerArray + elements + 1);
 	*pos = p;
-	++elements;
-	std::atexit(AtExitFn);
+    ++elements;
+
+	std::atexit(Private::AtExitFn);
 }
 
+
+void Private::AtExitFn() {
+    assert(elements > 0 && pTrackerArray != 0);
+    LifetimeTracker* pTop = pTrackerArray[elements - 1];
+    pTrackerArray = static_cast<TrackerArray>(
+        std::realloc(pTrackerArray, sizeof(*pTrackerArray) * --elements));
+
+        delete pTop;
 }
-
-
-
-
-
 
 
 class Singleton {
