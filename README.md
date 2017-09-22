@@ -125,24 +125,24 @@ My playground for the examples of the famous book: ["Modern C++ Design"](http://
 
 ### Chapter 7. Smart Pointers (p. 193)
 
-| Section   | Title                                            | Done      |
-|-----------|--------------------------------------------------|-----------|
-| 7.1       | Smart Pointers 101                               |           |
-| 7.2       | The Deal                                         |           |
-| 7.3       | Storage of Smart Pointers                        |           |
-| 7.4       | Smart Pointer Member Functions                   |           |
-| 7.5       | Ownership-Handling Strategies                    |           |
-| 7.6       | The Address-of Operator                          |           |
-| 7.7       | Implicit Conversion to Raw Pointer Types         |           |
-| 7.8       | Equality and Inequality                          |           |
-| 7.9       | Ordering Comparisons                             |           |
-| 7.10      | Checking and Error Reporting                     |           |
-| 7.11      | Smart Pointers to const and const Smart Pointers |           |
-| 7.12      | Arrays                                           |           |
-| 7.13      | Smart Pointers and Multithreading                |           |
-| 7.14      | Putting It All Together                          |           |
-| 7.15      | Summary                                          |           |
-| 7.16      | SmartPtr Quick Facts                             |           |
+| Section   | Title                                            | Done |
+|-----------|--------------------------------------------------|------|
+| 7.1       | Smart Pointers 101                               |   ✓  |
+| 7.2       | The Deal                                         |   ✓  |
+| 7.3       | Storage of Smart Pointers                        |   ✓  |
+| 7.4       | Smart Pointer Member Functions                   |   ✓  |
+| 7.5       | Ownership-Handling Strategies                    |      |
+| 7.6       | The Address-of Operator                          |      |
+| 7.7       | Implicit Conversion to Raw Pointer Types         |      |
+| 7.8       | Equality and Inequality                          |      |
+| 7.9       | Ordering Comparisons                             |      |
+| 7.10      | Checking and Error Reporting                     |      |
+| 7.11      | Smart Pointers to const and const Smart Pointers |      |
+| 7.12      | Arrays                                           |      |
+| 7.13      | Smart Pointers and Multithreading                |      |
+| 7.14      | Putting It All Together                          |      |
+| 7.15      | Summary                                          |      |
+| 7.16      | SmartPtr Quick Facts                             |      |
 
 
 ### Chapter 8. Object Factories (p. 237)
