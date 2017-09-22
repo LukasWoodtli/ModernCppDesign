@@ -115,12 +115,12 @@ My playground for the examples of the famous book: ["Modern C++ Design"](http://
 | 6.5       | The Dead Reference Problem                                            |   ✓  |
 | 6.6       | Addressing the Dead Reference Problem (I): The Phoenix Singleton      |   ✓  |
 | 6.7       | Addressing the Dead Reference Problem (II): Singletons with Longevity |   ✓  |
-| 6.8       | Implementing Singletons with Longevity                                |      |
-| 6.9       | Living in a Multithreaded World                                       |      |
-| 6.10      | Putting It All Together                                               |      |
-| 6.11      | Working with SingletonHolder                                          |      |
-| 6.12      | Summary                                                               |      |
-| 6.13      | SingletonHolder Class Template Quick Facts                            |      |
+| 6.8       | Implementing Singletons with Longevity                                |   ✓  |
+| 6.9       | Living in a Multithreaded World                                       |   ✓  |
+| 6.10      | Putting It All Together                                               |   ✓  |
+| 6.11      | Working with SingletonHolder                                          |   ✓  |
+| 6.12      | Summary                                                               |   ✓  |
+| 6.13      | SingletonHolder Class Template Quick Facts                            |   ✓  |
 
 
 ### Chapter 7. Smart Pointers (p. 193)

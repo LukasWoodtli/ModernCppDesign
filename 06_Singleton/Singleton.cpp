@@ -139,6 +139,81 @@ private:
 Singleton* Singleton::pInstance_ = 0;
 bool Singleton::destroyed_ = false;
 
+
+// Policy based SingletonHolder //
+
+template <class T>
+class SingleThreaded {
+    //...
+public:
+    typedef T VolatileType; // no volatile keyword for single threaded policy
+};
+
+template <class T>
+class MultiThreaded {
+    //...
+public:
+    typedef volatile T VolatileType; // no volatile keyword for single threaded policy
+};
+
+
+template <class T>
+class CreateUsingNew {
+public:
+    static T* Create() {
+        return new T;
+    }
+};
+
+template <class T>
+class DefaultLifetime {
+
+};
+
+template <class T, template <class> class CreationPolicy = CreateUsingNew,
+    template <class> class LifetimePolicy = DefaultLifetime,
+    template <class> class ThreadingModel = SingleThreaded>
+class SingletonHolder {
+public:
+    static T& Instance() {
+        if (!pInstance_) {
+            typename ThreadingModel<T>::Lock guard;
+            /* double checked locking pattern (might not be safe on 
+                some muliprocessor architectures) */
+            if (!pInstance_) {
+                if (destroyed_) {
+                    LifetimePolicy<T>::OnDeadReference();
+                    destroyed_ = false;
+                }
+
+                pInstance_ = CreationPolicy<T>::Create();
+                LifetimePolicy<T>::ScheduleDestruction(&DestroySingleton);
+            }
+        }
+
+        return *pInstance_;
+    }
+
+private:
+    static void DestroySingleton() {
+        assert(!destroyed_);
+        CreationPolicy<T>::Destoy(pInstance_);
+        pInstance_ = 0;
+        destroyed_ = true;
+    }
+
+    SingletonHolder();
+
+    typedef typename ThreadingModel<T>::VolatileType InstanceType;
+    static InstanceType* pInstance_;
+    static bool destroyed_;
+};
+
+
+
+/* The impletmentations in this file are not complete.
+   See the code for the book (Loki) for more detail. */
+
 int main(void) {
 
     return 0;
