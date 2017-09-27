@@ -47,19 +47,23 @@ private:
     unsigned int* pCount_;
 };
 
+template <class T>
+struct MultiThreadedDummy {
+};
 
 template <template <class> class ThreadingModel>
-struct RefCountedMtAdj {
+struct RefCountedMTAdj {
     template <class P>
     class RefCountedMT : public ThreadingModel<RefCountedMT<P>> {
         typedef ThreadingModel<RefCountedMT<P>> base_type;
-        typedef typename base_type::IntType CountType;
+        //typedef typename base_type::IntType CountType;
+	typedef unsigned int CountType;
         typedef volatile CountType *CountPtrType;
 
     public:
         RefCountedMT() {
-            pCount_ = new CountPtrType;
-            *pCount_ = 1;
+            pCount_ = new CountType;
+            *pCount_ = 1u;
         }
 
         RefCountedMT(const RefCountedMT& rhs) : pCount_(rhs.pCount_) {}
@@ -85,9 +89,12 @@ struct RefCountedMtAdj {
         enum { destructiveCopy = false };
 
     private:
-        CountPtrType *pCount_;
+        CountPtrType pCount_;
     };
 };
+
+template <class T>
+using RefCountedMT =RefCountedMTAdj<MultiThreadedDummy>::RefCountedMT<T>;
 
 template <class P>
 class COMRefCounted {
@@ -278,7 +285,7 @@ struct AssertCheckStrict {
     AssertCheckStrict(const NoCheck<P1>&) {}
 
     static void OnDefault(const P& val) {
-        assert(val);
+        // TODO assert(val);
         (void)val;
     }
 
@@ -342,6 +349,10 @@ public:
 
     ReferenceType operator*() const {return *pointee_;}
 
+    PointerType GetImpl() { return pointee_; }
+
+    StoredType GetImplRef() { return pointee_; }
+
 protected:
     void Destroy() {
         delete pointee_;
@@ -355,36 +366,55 @@ private:
 
 
 
-
-
-
 /// Smart Pointer /////////////////////
 template <typename T, 
           template <class> class OwnershipPolicy = RefCounted,
           class ConversionPolicy = DisallowConversion,
           template <class> class CheckingPolicy = AssertCheck,
           template <class> class StoragePolicy = DefaultSPStorage>
-class SmartPtr {
+class SmartPtr
+	: public StoragePolicy<T>,
+	  public OwnershipPolicy<typename StoragePolicy<T>::PointerType>,
+	  public CheckingPolicy<typename StoragePolicy<T>::StoredType>,
+	  public ConversionPolicy {
+
+    typedef StoragePolicy<T> SP;
+    typedef OwnershipPolicy<typename StoragePolicy<T>::PointerType> OP;
+    typedef CheckingPolicy<typename StoragePolicy<T>::StoredType> KP;
+    typedef ConversionPolicy CP;
+
 public:
-    explicit SmartPtr(T* pointee) : pointee_(pointee) {
-        // ...
-    }
 
-    SmartPtr& operator=(const SmartPtr& other);
-    ~SmartPtr() {}
-
-    T& operator*() const {
-        // ...
-        return *pointee_;
-    }
-
-    T* operator->() const {
-        // ...
-        return pointee_;
-    }
+    typedef typename SP::PointerType PointerType;
+    typedef typename SP::StoredType StoredType;
+    typedef typename SP::ReferenceType ReferenceType;
 
 private:
-    T* pointee_;
+    typedef SmartPtr CopyArg;
+
+    typedef const StoredType& ImplicitArg;
+
+public:
+    explicit SmartPtr(T* pointee) : SP(pointee) {
+        KP::OnInit(SP::GetImpl());
+    }
+
+    SmartPtr() {
+        KP::OnDefault(SP::GetImpl());
+    }
+
+    SmartPtr(CopyArg& rhs) : SP(rhs), OP(rhs), KP(rhs), CP(rhs) {
+        SP::GetImplRef() = OP::Clone(rhs.GetImplRef());
+    }
+
+
+    SmartPtr& operator=(const SmartPtr& other);
+    
+    ~SmartPtr() { /* ... */ }
+
+    /*
+    ...
+    */
 };
 
 
@@ -395,6 +425,59 @@ public:
     void Fun() {std::cout << "Fun()\n";}
 };
 
+class Button : public Widget {};
+class Window : public Widget {};
+
+
+
+typedef SmartPtr<Button, RefCounted, AllowConversion, AssertCheck, DefaultSPStorage> SmartPtrButtonRefCountedAllowConversionAssertCheckDefaultSPStorage;
+typedef SmartPtr<Button, RefCounted, AllowConversion, AssertCheckStrict, DefaultSPStorage> SmartPtrButtonRefCountedAllowConversionAssertCheckStrictDefaultSPStorage;
+typedef SmartPtr<Button, RefCounted, AllowConversion, RejectNull, DefaultSPStorage> SmartPtrButtonRefCountedAllowConversionRejectNullDefaultSPStorage;
+typedef SmartPtr<Button, RefCounted, AllowConversion, NoCheck, DefaultSPStorage> SmartPtrButtonRefCountedAllowConversionNoCheckDefaultSPStorage;
+typedef SmartPtr<Button, RefCounted, DisallowConversion, AssertCheck, DefaultSPStorage> SmartPtrButtonRefCountedDisallowConversionAssertCheckDefaultSPStorage;
+typedef SmartPtr<Button, RefCounted, DisallowConversion, AssertCheckStrict, DefaultSPStorage> SmartPtrButtonRefCountedDisallowConversionAssertCheckStrictDefaultSPStorage;
+typedef SmartPtr<Button, RefCounted, DisallowConversion, RejectNull, DefaultSPStorage> SmartPtrButtonRefCountedDisallowConversionRejectNullDefaultSPStorage;
+typedef SmartPtr<Button, RefCounted, DisallowConversion, NoCheck, DefaultSPStorage> SmartPtrButtonRefCountedDisallowConversionNoCheckDefaultSPStorage;
+typedef SmartPtr<Button, RefCountedMT, AllowConversion, AssertCheck, DefaultSPStorage> SmartPtrButtonRefCountedMTAllowConversionAssertCheckDefaultSPStorage;
+typedef SmartPtr<Button, RefCountedMT, AllowConversion, AssertCheckStrict, DefaultSPStorage> SmartPtrButtonRefCountedMTAllowConversionAssertCheckStrictDefaultSPStorage;
+typedef SmartPtr<Button, RefCountedMT, AllowConversion, RejectNull, DefaultSPStorage> SmartPtrButtonRefCountedMTAllowConversionRejectNullDefaultSPStorage;
+typedef SmartPtr<Button, RefCountedMT, AllowConversion, NoCheck, DefaultSPStorage> SmartPtrButtonRefCountedMTAllowConversionNoCheckDefaultSPStorage;
+typedef SmartPtr<Button, RefCountedMT, DisallowConversion, AssertCheck, DefaultSPStorage> SmartPtrButtonRefCountedMTDisallowConversionAssertCheckDefaultSPStorage;
+typedef SmartPtr<Button, RefCountedMT, DisallowConversion, AssertCheckStrict, DefaultSPStorage> SmartPtrButtonRefCountedMTDisallowConversionAssertCheckStrictDefaultSPStorage;
+typedef SmartPtr<Button, RefCountedMT, DisallowConversion, RejectNull, DefaultSPStorage> SmartPtrButtonRefCountedMTDisallowConversionRejectNullDefaultSPStorage;
+typedef SmartPtr<Button, RefCountedMT, DisallowConversion, NoCheck, DefaultSPStorage> SmartPtrButtonRefCountedMTDisallowConversionNoCheckDefaultSPStorage;
+typedef SmartPtr<Button, COMRefCounted, AllowConversion, AssertCheck, DefaultSPStorage> SmartPtrButtonCOMRefCountedAllowConversionAssertCheckDefaultSPStorage;
+typedef SmartPtr<Button, COMRefCounted, AllowConversion, AssertCheckStrict, DefaultSPStorage> SmartPtrButtonCOMRefCountedAllowConversionAssertCheckStrictDefaultSPStorage;
+typedef SmartPtr<Button, COMRefCounted, AllowConversion, RejectNull, DefaultSPStorage> SmartPtrButtonCOMRefCountedAllowConversionRejectNullDefaultSPStorage;
+typedef SmartPtr<Button, COMRefCounted, AllowConversion, NoCheck, DefaultSPStorage> SmartPtrButtonCOMRefCountedAllowConversionNoCheckDefaultSPStorage;
+typedef SmartPtr<Button, COMRefCounted, DisallowConversion, AssertCheck, DefaultSPStorage> SmartPtrButtonCOMRefCountedDisallowConversionAssertCheckDefaultSPStorage;
+typedef SmartPtr<Button, COMRefCounted, DisallowConversion, AssertCheckStrict, DefaultSPStorage> SmartPtrButtonCOMRefCountedDisallowConversionAssertCheckStrictDefaultSPStorage;
+typedef SmartPtr<Button, COMRefCounted, DisallowConversion, RejectNull, DefaultSPStorage> SmartPtrButtonCOMRefCountedDisallowConversionRejectNullDefaultSPStorage;
+typedef SmartPtr<Button, COMRefCounted, DisallowConversion, NoCheck, DefaultSPStorage> SmartPtrButtonCOMRefCountedDisallowConversionNoCheckDefaultSPStorage;
+typedef SmartPtr<Button, RefLinked, AllowConversion, AssertCheck, DefaultSPStorage> SmartPtrButtonRefLinkedAllowConversionAssertCheckDefaultSPStorage;
+typedef SmartPtr<Button, RefLinked, AllowConversion, AssertCheckStrict, DefaultSPStorage> SmartPtrButtonRefLinkedAllowConversionAssertCheckStrictDefaultSPStorage;
+typedef SmartPtr<Button, RefLinked, AllowConversion, RejectNull, DefaultSPStorage> SmartPtrButtonRefLinkedAllowConversionRejectNullDefaultSPStorage;
+typedef SmartPtr<Button, RefLinked, AllowConversion, NoCheck, DefaultSPStorage> SmartPtrButtonRefLinkedAllowConversionNoCheckDefaultSPStorage;
+typedef SmartPtr<Button, RefLinked, DisallowConversion, AssertCheck, DefaultSPStorage> SmartPtrButtonRefLinkedDisallowConversionAssertCheckDefaultSPStorage;
+typedef SmartPtr<Button, RefLinked, DisallowConversion, AssertCheckStrict, DefaultSPStorage> SmartPtrButtonRefLinkedDisallowConversionAssertCheckStrictDefaultSPStorage;
+typedef SmartPtr<Button, RefLinked, DisallowConversion, RejectNull, DefaultSPStorage> SmartPtrButtonRefLinkedDisallowConversionRejectNullDefaultSPStorage;
+typedef SmartPtr<Button, RefLinked, DisallowConversion, NoCheck, DefaultSPStorage> SmartPtrButtonRefLinkedDisallowConversionNoCheckDefaultSPStorage;
+typedef SmartPtr<Button, DestructiveCopy, AllowConversion, AssertCheck, DefaultSPStorage> SmartPtrButtonDestructiveCopyAllowConversionAssertCheckDefaultSPStorage;
+typedef SmartPtr<Button, DestructiveCopy, AllowConversion, AssertCheckStrict, DefaultSPStorage> SmartPtrButtonDestructiveCopyAllowConversionAssertCheckStrictDefaultSPStorage;
+typedef SmartPtr<Button, DestructiveCopy, AllowConversion, RejectNull, DefaultSPStorage> SmartPtrButtonDestructiveCopyAllowConversionRejectNullDefaultSPStorage;
+typedef SmartPtr<Button, DestructiveCopy, AllowConversion, NoCheck, DefaultSPStorage> SmartPtrButtonDestructiveCopyAllowConversionNoCheckDefaultSPStorage;
+typedef SmartPtr<Button, DestructiveCopy, DisallowConversion, AssertCheck, DefaultSPStorage> SmartPtrButtonDestructiveCopyDisallowConversionAssertCheckDefaultSPStorage;
+typedef SmartPtr<Button, DestructiveCopy, DisallowConversion, AssertCheckStrict, DefaultSPStorage> SmartPtrButtonDestructiveCopyDisallowConversionAssertCheckStrictDefaultSPStorage;
+typedef SmartPtr<Button, DestructiveCopy, DisallowConversion, RejectNull, DefaultSPStorage> SmartPtrButtonDestructiveCopyDisallowConversionRejectNullDefaultSPStorage;
+typedef SmartPtr<Button, DestructiveCopy, DisallowConversion, NoCheck, DefaultSPStorage> SmartPtrButtonDestructiveCopyDisallowConversionNoCheckDefaultSPStorage;
+typedef SmartPtr<Button, NoCopy, AllowConversion, AssertCheck, DefaultSPStorage> SmartPtrButtonNoCopyAllowConversionAssertCheckDefaultSPStorage;
+typedef SmartPtr<Button, NoCopy, AllowConversion, AssertCheckStrict, DefaultSPStorage> SmartPtrButtonNoCopyAllowConversionAssertCheckStrictDefaultSPStorage;
+typedef SmartPtr<Button, NoCopy, AllowConversion, RejectNull, DefaultSPStorage> SmartPtrButtonNoCopyAllowConversionRejectNullDefaultSPStorage;
+typedef SmartPtr<Button, NoCopy, AllowConversion, NoCheck, DefaultSPStorage> SmartPtrButtonNoCopyAllowConversionNoCheckDefaultSPStorage;
+typedef SmartPtr<Button, NoCopy, DisallowConversion, AssertCheck, DefaultSPStorage> SmartPtrButtonNoCopyDisallowConversionAssertCheckDefaultSPStorage;
+typedef SmartPtr<Button, NoCopy, DisallowConversion, AssertCheckStrict, DefaultSPStorage> SmartPtrButtonNoCopyDisallowConversionAssertCheckStrictDefaultSPStorage;
+typedef SmartPtr<Button, NoCopy, DisallowConversion, RejectNull, DefaultSPStorage> SmartPtrButtonNoCopyDisallowConversionRejectNullDefaultSPStorage;
+typedef SmartPtr<Button, NoCopy, DisallowConversion, NoCheck, DefaultSPStorage> SmartPtrButtonNoCopyDisallowConversionNoCheckDefaultSPStorage;
 
 
 int main(void) {
@@ -402,5 +485,105 @@ int main(void) {
     SmartPtr<Widget> sp(new Widget);
     sp->Fun();
     (*sp).Fun();
+
+    SmartPtrButtonRefCountedAllowConversionAssertCheckDefaultSPStorage smartPtrButtonRefCountedAllowConversionAssertCheckDefaultSPStorage;
+
+    SmartPtrButtonRefCountedAllowConversionAssertCheckStrictDefaultSPStorage smartPtrButtonRefCountedAllowConversionAssertCheckStrictDefaultSPStorage;
+
+    SmartPtrButtonRefCountedAllowConversionRejectNullDefaultSPStorage smartPtrButtonRefCountedAllowConversionRejectNullDefaultSPStorage(new Button);
+
+    SmartPtrButtonRefCountedAllowConversionNoCheckDefaultSPStorage smartPtrButtonRefCountedAllowConversionNoCheckDefaultSPStorage;
+
+    SmartPtrButtonRefCountedDisallowConversionAssertCheckDefaultSPStorage smartPtrButtonRefCountedDisallowConversionAssertCheckDefaultSPStorage;
+
+    SmartPtrButtonRefCountedDisallowConversionAssertCheckStrictDefaultSPStorage smartPtrButtonRefCountedDisallowConversionAssertCheckStrictDefaultSPStorage;
+
+    SmartPtrButtonRefCountedDisallowConversionRejectNullDefaultSPStorage smartPtrButtonRefCountedDisallowConversionRejectNullDefaultSPStorage(new Button);
+
+    SmartPtrButtonRefCountedDisallowConversionNoCheckDefaultSPStorage smartPtrButtonRefCountedDisallowConversionNoCheckDefaultSPStorage;
+
+    SmartPtrButtonRefCountedMTAllowConversionAssertCheckDefaultSPStorage smartPtrButtonRefCountedMTAllowConversionAssertCheckDefaultSPStorage;
+
+    SmartPtrButtonRefCountedMTAllowConversionAssertCheckStrictDefaultSPStorage smartPtrButtonRefCountedMTAllowConversionAssertCheckStrictDefaultSPStorage;
+
+    SmartPtrButtonRefCountedMTAllowConversionRejectNullDefaultSPStorage smartPtrButtonRefCountedMTAllowConversionRejectNullDefaultSPStorage(new Button);
+
+    SmartPtrButtonRefCountedMTAllowConversionNoCheckDefaultSPStorage smartPtrButtonRefCountedMTAllowConversionNoCheckDefaultSPStorage;
+
+    SmartPtrButtonRefCountedMTDisallowConversionAssertCheckDefaultSPStorage smartPtrButtonRefCountedMTDisallowConversionAssertCheckDefaultSPStorage;
+
+    SmartPtrButtonRefCountedMTDisallowConversionAssertCheckStrictDefaultSPStorage smartPtrButtonRefCountedMTDisallowConversionAssertCheckStrictDefaultSPStorage;
+
+    SmartPtrButtonRefCountedMTDisallowConversionRejectNullDefaultSPStorage smartPtrButtonRefCountedMTDisallowConversionRejectNullDefaultSPStorage(new Button);
+
+    SmartPtrButtonRefCountedMTDisallowConversionNoCheckDefaultSPStorage smartPtrButtonRefCountedMTDisallowConversionNoCheckDefaultSPStorage;
+
+    SmartPtrButtonCOMRefCountedAllowConversionAssertCheckDefaultSPStorage smartPtrButtonCOMRefCountedAllowConversionAssertCheckDefaultSPStorage;
+
+    SmartPtrButtonCOMRefCountedAllowConversionAssertCheckStrictDefaultSPStorage smartPtrButtonCOMRefCountedAllowConversionAssertCheckStrictDefaultSPStorage;
+
+    SmartPtrButtonCOMRefCountedAllowConversionRejectNullDefaultSPStorage smartPtrButtonCOMRefCountedAllowConversionRejectNullDefaultSPStorage(new Button);
+
+    SmartPtrButtonCOMRefCountedAllowConversionNoCheckDefaultSPStorage smartPtrButtonCOMRefCountedAllowConversionNoCheckDefaultSPStorage;
+
+    SmartPtrButtonCOMRefCountedDisallowConversionAssertCheckDefaultSPStorage smartPtrButtonCOMRefCountedDisallowConversionAssertCheckDefaultSPStorage;
+
+    SmartPtrButtonCOMRefCountedDisallowConversionAssertCheckStrictDefaultSPStorage smartPtrButtonCOMRefCountedDisallowConversionAssertCheckStrictDefaultSPStorage;
+
+    SmartPtrButtonCOMRefCountedDisallowConversionRejectNullDefaultSPStorage smartPtrButtonCOMRefCountedDisallowConversionRejectNullDefaultSPStorage(new Button);
+
+    SmartPtrButtonCOMRefCountedDisallowConversionNoCheckDefaultSPStorage smartPtrButtonCOMRefCountedDisallowConversionNoCheckDefaultSPStorage;
+
+    SmartPtrButtonRefLinkedAllowConversionAssertCheckDefaultSPStorage smartPtrButtonRefLinkedAllowConversionAssertCheckDefaultSPStorage;
+
+    SmartPtrButtonRefLinkedAllowConversionAssertCheckStrictDefaultSPStorage smartPtrButtonRefLinkedAllowConversionAssertCheckStrictDefaultSPStorage;
+
+    SmartPtrButtonRefLinkedAllowConversionRejectNullDefaultSPStorage smartPtrButtonRefLinkedAllowConversionRejectNullDefaultSPStorage(new Button);
+
+    SmartPtrButtonRefLinkedAllowConversionNoCheckDefaultSPStorage smartPtrButtonRefLinkedAllowConversionNoCheckDefaultSPStorage;
+
+    SmartPtrButtonRefLinkedDisallowConversionAssertCheckDefaultSPStorage smartPtrButtonRefLinkedDisallowConversionAssertCheckDefaultSPStorage;
+
+    SmartPtrButtonRefLinkedDisallowConversionAssertCheckStrictDefaultSPStorage smartPtrButtonRefLinkedDisallowConversionAssertCheckStrictDefaultSPStorage;
+
+    SmartPtrButtonRefLinkedDisallowConversionRejectNullDefaultSPStorage smartPtrButtonRefLinkedDisallowConversionRejectNullDefaultSPStorage(new Button);
+
+    SmartPtrButtonRefLinkedDisallowConversionNoCheckDefaultSPStorage smartPtrButtonRefLinkedDisallowConversionNoCheckDefaultSPStorage;
+
+    SmartPtrButtonDestructiveCopyAllowConversionAssertCheckDefaultSPStorage smartPtrButtonDestructiveCopyAllowConversionAssertCheckDefaultSPStorage;
+
+    SmartPtrButtonDestructiveCopyAllowConversionAssertCheckStrictDefaultSPStorage smartPtrButtonDestructiveCopyAllowConversionAssertCheckStrictDefaultSPStorage;
+
+    SmartPtrButtonDestructiveCopyAllowConversionRejectNullDefaultSPStorage smartPtrButtonDestructiveCopyAllowConversionRejectNullDefaultSPStorage(new Button);
+
+    SmartPtrButtonDestructiveCopyAllowConversionNoCheckDefaultSPStorage smartPtrButtonDestructiveCopyAllowConversionNoCheckDefaultSPStorage;
+
+    SmartPtrButtonDestructiveCopyDisallowConversionAssertCheckDefaultSPStorage smartPtrButtonDestructiveCopyDisallowConversionAssertCheckDefaultSPStorage;
+
+    SmartPtrButtonDestructiveCopyDisallowConversionAssertCheckStrictDefaultSPStorage smartPtrButtonDestructiveCopyDisallowConversionAssertCheckStrictDefaultSPStorage;
+
+    SmartPtrButtonDestructiveCopyDisallowConversionRejectNullDefaultSPStorage smartPtrButtonDestructiveCopyDisallowConversionRejectNullDefaultSPStorage(new Button);
+
+    SmartPtrButtonDestructiveCopyDisallowConversionNoCheckDefaultSPStorage smartPtrButtonDestructiveCopyDisallowConversionNoCheckDefaultSPStorage;
+
+    SmartPtrButtonNoCopyAllowConversionAssertCheckDefaultSPStorage smartPtrButtonNoCopyAllowConversionAssertCheckDefaultSPStorage;
+
+    SmartPtrButtonNoCopyAllowConversionAssertCheckStrictDefaultSPStorage smartPtrButtonNoCopyAllowConversionAssertCheckStrictDefaultSPStorage;
+
+    SmartPtrButtonNoCopyAllowConversionRejectNullDefaultSPStorage smartPtrButtonNoCopyAllowConversionRejectNullDefaultSPStorage(new Button);
+
+    SmartPtrButtonNoCopyAllowConversionNoCheckDefaultSPStorage smartPtrButtonNoCopyAllowConversionNoCheckDefaultSPStorage;
+
+    SmartPtrButtonNoCopyDisallowConversionAssertCheckDefaultSPStorage smartPtrButtonNoCopyDisallowConversionAssertCheckDefaultSPStorage;
+
+    SmartPtrButtonNoCopyDisallowConversionAssertCheckStrictDefaultSPStorage smartPtrButtonNoCopyDisallowConversionAssertCheckStrictDefaultSPStorage;
+
+    SmartPtrButtonNoCopyDisallowConversionRejectNullDefaultSPStorage smartPtrButtonNoCopyDisallowConversionRejectNullDefaultSPStorage(new Button);
+
+    SmartPtrButtonNoCopyDisallowConversionNoCheckDefaultSPStorage smartPtrButtonNoCopyDisallowConversionNoCheckDefaultSPStorage;
+
+
+
     return 0;
 }
+
