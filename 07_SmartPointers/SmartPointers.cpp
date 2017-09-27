@@ -417,6 +417,45 @@ public:
     */
 };
 
+/// Smart Pointer with Locking Proxie ////////////
+
+template <class T>
+class LockingProxy {
+public:
+    LockingProxy(T* pObj) : pointee_(pObj) {
+        // TODO Do the locking here
+        std::cout << "LockingProxy is locking pointee\n";
+    }
+
+    ~LockingProxy() {
+        std::cout << "LockingProxy is un-locking pointee\n";
+    }
+    
+    T* operator->() const {
+        return pointee_;
+    }
+
+private:
+    LockingProxy& operator=(const LockingProxy&);
+    T* pointee_;
+};
+
+
+template <class T>
+class SmartPtrWithLockingProxy {
+    // ...
+public:
+    
+    SmartPtrWithLockingProxy(T* obj) : pointee_(obj) {}
+    
+    LockingProxy<T> operator->() const {
+        return LockingProxy<T>(pointee_);
+    }
+    
+private:
+    T* pointee_;
+};
+
 
 
 /// Tests /////////////////////
@@ -425,7 +464,7 @@ public:
     void Fun() {std::cout << "Fun()\n";}
 };
 
-class Button : public Widget {};
+class Button : public Widget { public: void print() {std::cout << "Button\n";}};
 class Window : public Widget {};
 
 
@@ -485,6 +524,13 @@ int main(void) {
     SmartPtr<Widget> sp(new Widget);
     sp->Fun();
     (*sp).Fun();
+    
+    
+    SmartPtrWithLockingProxy<Button> pointerWithLocking(new Button);
+    // C++ is calling operator-> until it reaches a pointer
+    pointerWithLocking->print();
+    
+    
 
     SmartPtrButtonRefCountedAllowConversionAssertCheckDefaultSPStorage smartPtrButtonRefCountedAllowConversionAssertCheckDefaultSPStorage;
 
