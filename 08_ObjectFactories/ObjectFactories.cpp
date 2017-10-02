@@ -1,5 +1,4 @@
 #include <map>
-#include <cassert>
 
 class Shape {
 };
@@ -63,6 +62,67 @@ namespace {
     const bool registered =
         ShapeFactory::Instance()->RegisterShape(LINE, CreateLine);
 }
+
+
+
+//// Generic Factory /////////////////////////////////
+
+
+template<class IdentifierType, class ProductType>
+class DefaultFactoryError {
+public:
+    class Exception : public std::exception {
+    public:
+        Exception(const IdentifierType& unknownId)
+            : unknownId_(unknownId) {}
+
+        virtual const char* what() {
+            return "Unknown object type passed to Factory.";
+        }
+
+        const IdentifierType& GetID() {
+            return unknownId_;
+        }
+
+    private:
+        IdentifierType unknownId_;
+    };
+
+protected:
+    static ProductType* OnUnknownType(const IdentifierType& id) {
+        throw Exception(id);
+    }
+};
+
+template<class AbstractProduct, typename IdentifierType, 
+    typename ProductCreator = AbstractProduct* (*)(),
+    // pointer to function with no param and returning pointer to AbstractProduct
+    template<typename, class> class FactoryErrorPolicy = DefaultFactoryError>
+class Factory : public FactoryErrorPolicy<IdentifierType, AbstractProduct> {
+public:
+    bool Register(const IdentifierType& id, ProductCreator creator) {
+        return associations_.insert(AssocMap::value_type(id, creator)).second;
+    }
+
+    bool Unregister(const IdentifierType& id) {
+        return associations_.erase(id) == 1;
+    }
+
+    AbstractProduct* CreateObject(const IdentifierType& id) {
+        typename AssocMap::const_iterator i =
+            associations_.find(id);
+        
+        if (i != associations_.end()) {
+            return (i->second)();
+        }
+
+        return OnUnknownType(id);
+    }
+
+private:
+    typedef std::map<IdentifierType, ProductCreator> AssocMap;
+    AssocMap associations_;
+};
 
 
 int main(void) {

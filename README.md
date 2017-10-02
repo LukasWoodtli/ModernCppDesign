@@ -153,8 +153,8 @@ My playground for the examples of the famous book: ["Modern C++ Design"](http://
 | 8.2       | Object Factories in C++: Classes and Objects         |   ✓  |
 | 8.3       | Implementing an Object Factory                       |   ✓  |
 | 8.4       | Type Identifiers                                     |   ✓  |
-| 8.5       | Generalization                                       |      |
-| 8.6       | Minutiae                                             |      |
+| 8.5       | Generalization                                       |   ✓  |
+| 8.6       | Minutiae                                             |   ✓  |
 | 8.7       | Clone Factories                                      |      |
 | 8.8       | Using Object Factories with Other Generic Components |      |
 | 8.9       | Summary                                              |      |
