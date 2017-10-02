@@ -147,19 +147,19 @@ My playground for the examples of the famous book: ["Modern C++ Design"](http://
 
 ### Chapter 8. Object Factories (p. 237)
 
-| Section   | Title                                                | Done      |
-|-----------|------------------------------------------------------|-----------|
-| 8.1       | The Need for Object Factories                        |           |
-| 8.2       | Object Factories in C++: Classes and Objects         |           |
-| 8.3       | Implementing an Object Factory                       |           |
-| 8.4       | Type Identifiers                                     |           |
-| 8.5       | Generalization                                       |           |
-| 8.6       | Minutiae                                             |           |
-| 8.7       | Clone Factories                                      |           |
-| 8.8       | Using Object Factories with Other Generic Components |           |
-| 8.9       | Summary                                              |           |
-| 8.10      | Factory Class Template Quick Facts                   |           |
-| 8.11      | CloneFactory Class Template Quick Facts              |           |
+| Section   | Title                                                | Done |
+|-----------|------------------------------------------------------|------|
+| 8.1       | The Need for Object Factories                        |   ✓  |
+| 8.2       | Object Factories in C++: Classes and Objects         |   ✓  |
+| 8.3       | Implementing an Object Factory                       |   ✓  |
+| 8.4       | Type Identifiers                                     |   ✓  |
+| 8.5       | Generalization                                       |      |
+| 8.6       | Minutiae                                             |      |
+| 8.7       | Clone Factories                                      |      |
+| 8.8       | Using Object Factories with Other Generic Components |      |
+| 8.9       | Summary                                              |      |
+| 8.10      | Factory Class Template Quick Facts                   |      |
+| 8.11      | CloneFactory Class Template Quick Facts              |      |
 
 
 ### Chapter 9. Abstract Factory (p. 262)
