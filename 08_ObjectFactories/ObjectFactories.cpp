@@ -1,9 +1,16 @@
 #include <map>
+#include <cassert>
+#include <string>
+#include <iostream>
 
 class Shape {
+public:
+    virtual void draw() = 0;
 };
 
 class Line : public Shape {
+public:
+    virtual void draw() { std::cout << "Line\n"; }
 };
 
 
@@ -101,7 +108,7 @@ template<class AbstractProduct, typename IdentifierType,
 class Factory : public FactoryErrorPolicy<IdentifierType, AbstractProduct> {
 public:
     bool Register(const IdentifierType& id, ProductCreator creator) {
-        return associations_.insert(AssocMap::value_type(id, creator)).second;
+        return associations_.insert(typename AssocMap::value_type(id, creator)).second;
     }
 
     bool Unregister(const IdentifierType& id) {
@@ -116,7 +123,7 @@ public:
             return (i->second)();
         }
 
-        return OnUnknownType(id);
+        return FactoryErrorPolicy<IdentifierType, AbstractProduct>::OnUnknownType(id);
     }
 
 private:
@@ -126,5 +133,16 @@ private:
 
 
 int main(void) {
+    Factory<Shape, std::string> shapeFactory;
+    bool success = shapeFactory.Register("Line", []() -> Shape* {return new Line;});
+    assert(success);
     
+    Shape* shape = shapeFactory.CreateObject("Line");
+    shape->draw();
+    
+    success = shapeFactory.Unregister("Line");
+    assert(success);
+    
+    
+    (void)success;
 }

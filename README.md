@@ -155,11 +155,11 @@ My playground for the examples of the famous book: ["Modern C++ Design"](http://
 | 8.4       | Type Identifiers                                     |   ✓  |
 | 8.5       | Generalization                                       |   ✓  |
 | 8.6       | Minutiae                                             |   ✓  |
-| 8.7       | Clone Factories                                      |      |
-| 8.8       | Using Object Factories with Other Generic Components |      |
-| 8.9       | Summary                                              |      |
-| 8.10      | Factory Class Template Quick Facts                   |      |
-| 8.11      | CloneFactory Class Template Quick Facts              |      |
+| 8.7       | Clone Factories                                      |   ✓  |
+| 8.8       | Using Object Factories with Other Generic Components |   ✓  |
+| 8.9       | Summary                                              |   ✓  |
+| 8.10      | Factory Class Template Quick Facts                   |   ✓  |
+| 8.11      | CloneFactory Class Template Quick Facts              |   ✓  |
 
 
 ### Chapter 9. Abstract Factory (p. 262)
