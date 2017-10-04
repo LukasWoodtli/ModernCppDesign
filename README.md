@@ -164,14 +164,14 @@ My playground for the examples of the famous book: ["Modern C++ Design"](http://
 
 ### Chapter 9. Abstract Factory (p. 262)
 
-| Section   | Title                                             | Done      |
-|-----------|---------------------------------------------------|-----------|
-| 9.1       | The Architectural Role of Abstract Factory        |           |
-| 9.2       | A Generic Abstract Factory Interface              |           |
-| 9.3       | Implementing AbstractFactory                      |           |
-| 9.4       | A Prototype-Based Abstract Factory Implementation |           |
-| 9.5       | Summary                                           |           |
-| 9.6       | AbstractFactory and ConcreteFactory Quick Facts   |           |
+| Section   | Title                                             | Done |
+|-----------|---------------------------------------------------|------|
+| 9.1       | The Architectural Role of Abstract Factory        |   ✓  |
+| 9.2       | A Generic Abstract Factory Interface              |      |
+| 9.3       | Implementing AbstractFactory                      |      |
+| 9.4       | A Prototype-Based Abstract Factory Implementation |      |
+| 9.5       | Summary                                           |      |
+| 9.6       | AbstractFactory and ConcreteFactory Quick Facts   |      |
 
 
 ### Chapter 10. Visitor
