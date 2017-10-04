@@ -83,7 +83,7 @@ public:
         Exception(const IdentifierType& unknownId)
             : unknownId_(unknownId) {}
 
-        virtual const char* what() {
+        virtual const char* what() const noexcept override {
             return "Unknown object type passed to Factory.";
         }
 
