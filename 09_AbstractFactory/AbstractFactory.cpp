@@ -17,7 +17,7 @@ class SuperMonster : public Enemy {};
 class SillySuperMonster : public SuperMonster { public: virtual void print() { std::cout << "SillySuperMonster\n"; } };
 class BadSuperMonster : public SuperMonster { public: virtual void print() { std::cout << "BadSuperMonster\n"; } };
 
-
+namespace traditional_implementation {
 class AbstractEnemyFactory {
 public:
     virtual Soldier* MakeSoldier() = 0;
@@ -77,7 +77,7 @@ private:
         
 };
 
-
+}
 
 //// Generic Implementation ////////////////////////////
 
@@ -99,18 +99,44 @@ public:
 };
 
 
+template <class ConcreteProduct, class Base>
+class OpNewFactoryUnit : public Base {
+    typedef typename Base::ProductList BaseProductList;
+protected:
+    typedef typename BaseProductList::Tail ProductList;
+public:
+    typedef typename BaseProductList::Head AbstractProduct;
+
+    ConcreteProduct* DoCreate(Type2Type<AbstractProduct>) {
+        return new ConcreteProduct;
+    }
+};
+
+
+template<class AbstractFact,
+    template<class, class> class Creator = OpNewFactoryUnit,
+    class TList = typename AbstractFact::ProductList>
+class ConcreteFactory : public GenLinearHierarchy<
+    typename Reverse<TList>::Result, Creator, AbstractFact> {
+public:
+    typedef typename AbstractFact::ProductList ProductList;
+    typedef TList ConcreteProductList;
+};
+
 
 
 //// Tests //////////////////////////////////////
 
-typedef AbstractFactory<TYPELIST_3(Soldier, Monster, SuperMonster)> GenericAbstractEnemyFactory;
+typedef AbstractFactory<TYPELIST_3(Soldier, Monster, SuperMonster)> AbstractEnemyFactory;
+typedef ConcreteFactory<AbstractEnemyFactory, OpNewFactoryUnit,
+    TYPELIST_3(SillySoldier, SillyMonster, SillySuperMonster)> EasyLevelEnemyFactory;
 
 int main() {
-    GameApp gameApp;
+    traditional_implementation::GameApp gameApp;
     
     
     gameApp.SelectLevel(true);
-    AbstractEnemyFactory* factory = gameApp.getFactory();
+    traditional_implementation::AbstractEnemyFactory* factory = gameApp.getFactory();
     
     Soldier* soldier = factory->MakeSoldier();
     soldier->print();

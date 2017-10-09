@@ -223,6 +223,22 @@ struct ReplaceAll<Typelist<Head, Tail>, T, U> {
 };
 
 
+// reverse
+template <class TList>
+struct Reverse;
+
+template <>
+struct Reverse<NullType> {
+  typedef NullType Result;
+};
+
+template <class Head, class Tail>
+struct Reverse<Typelist<Head, Tail>> {
+  typedef typename Append<
+    typename Reverse<Tail>::Result, Head>::Result Result;
+};
+
+
 // Select type based on predicate
 template <bool flag, typename T, typename U>
 struct Select {
