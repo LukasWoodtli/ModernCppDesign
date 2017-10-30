@@ -74,7 +74,7 @@ public:
     
 private:
     AbstractEnemyFactory* pFactory_;
-        
+
 };
 
 }
@@ -125,16 +125,38 @@ public:
 
 
 
-//// Tests //////////////////////////////////////
-
 typedef AbstractFactory<TYPELIST_3(Soldier, Monster, SuperMonster)> AbstractEnemyFactory;
 typedef ConcreteFactory<AbstractEnemyFactory, OpNewFactoryUnit,
     TYPELIST_3(SillySoldier, SillyMonster, SillySuperMonster)> EasyLevelEnemyFactory;
+typedef ConcreteFactory<AbstractEnemyFactory, OpNewFactoryUnit,
+  TYPELIST_3(BadSoldier, BadMonster, BadSuperMonster)> DieHardLevelEnemyFactory;
 
-int main() {
+class GameApp {
+public:
+    void SelectLevel(bool easy) {
+        if (easy)
+            pFactory_ = new EasyLevelEnemyFactory;
+        else
+            pFactory_ = new DieHardLevelEnemyFactory;
+    }
+
+    AbstractEnemyFactory* getFactory() const {
+        return pFactory_;
+    }
+
+private:
+    AbstractEnemyFactory* pFactory_;
+
+};
+
+
+//// Tests //////////////////////////////////////
+
+
+void traditionalImplementaionTest() {
+    // traditional implementation
     traditional_implementation::GameApp gameApp;
-    
-    
+
     gameApp.SelectLevel(true);
     traditional_implementation::AbstractEnemyFactory* factory = gameApp.getFactory();
     
@@ -159,4 +181,40 @@ int main() {
 
     superMonster = factory->MakeSuperMonster();
     superMonster->print();
+}
+
+
+void genericImplementationTest() {
+    // Modern C++
+    GameApp modernGameApp;
+
+    modernGameApp.SelectLevel(true);
+    AbstractEnemyFactory* modernFactory = modernGameApp.getFactory();
+    
+    Soldier* soldier = modernFactory->Create<Soldier>();
+    soldier->print();
+    
+    Monster* monster = modernFactory->Create<Monster>();
+    monster->print();
+
+    SuperMonster* superMonster = modernFactory->Create<SuperMonster>();
+    superMonster->print();
+    
+
+    modernGameApp.SelectLevel(false);
+    modernFactory = modernGameApp.getFactory();
+    
+    soldier = modernFactory->Create<Soldier>();
+    soldier->print();
+    
+    monster = modernFactory->Create<Monster>();
+    monster->print();
+
+    superMonster = modernFactory->Create<SuperMonster>();
+    superMonster->print();
+}
+
+int main() {
+  traditionalImplementaionTest();
+  genericImplementationTest();
 }
