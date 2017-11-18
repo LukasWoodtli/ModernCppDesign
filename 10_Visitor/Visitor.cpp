@@ -1,41 +1,76 @@
+#include <vector>
+#include <iostream>
 
-
-
-class DocStats {
-    unsigned int chars_, nonBlankChars_, words_, images_;
-    // ...
-
-public:
-    void AddChars(unsigned int charsToAdd) {
-        chars_ += charsToAdd;
-    }
-    void AddWords(unsigned int charsToAdd) {
-        words_ += charsToAdd;
-    }
-    void AddImages(unsigned int charsToAdd) {
-        words_ += charsToAdd;
-    }
-
-    void Display();
-};
+class DocElementVisitor;
 
 class DocElement {
-    virtual void UpdateStats(DocStats& statistics) = 0;
+public:
+    virtual void Accept(DocElementVisitor&) = 0;
+};
+
+class Paragraph;
+class RasterBitmap;
+
+class DocElementVisitor {
+public:
+    virtual void VisitParagraph(Paragraph&) = 0;
+    virtual void VisitRasterBitmap(RasterBitmap&) = 0;
+    // ...
 };
 
 class Paragraph : public DocElement {
 public:
-    void UpdateStats(DocStats& statistics) {
-        statistics.AddChars(22); // would count number of chars
-        statistics.AddWords(3); // would count number of words
+        unsigned int NumChars() {
+            return 3; // would count chars here
+        }
+        unsigned int NumWords() {
+            return 5; // woud count words here
+        }
+    virtual void Accept(DocElementVisitor& v) {
+        v.VisitParagraph(*this);
     }
 };
 
 
 class RasterBitmap : public DocElement {
 public:
-    void UpdateStats(DocStats& statistics) {
-        statistics.AddImages(1);
+    virtual void Accept(DocElementVisitor& v) {
+        v.VisitRasterBitmap(*this);
+    }
+};
+
+
+class DocStats : public DocElementVisitor {
+    unsigned int chars_, words_, images_;
+public:
+    virtual void VisitParagraph(Paragraph& par) {
+        chars_ += par.NumChars();
+        words_ += par.NumWords();
+    }
+
+    virtual void VisitRasterBitmap(RasterBitmap&) {
+        ++images_;
+    }
+
+    void Display() {
+        std::cout << "Stats:\n";
+        std::cout << chars_ << "\n";
+        std::cout << words_ << "\n";
+        std::cout << images_ << "\n\n";
+    }
+};
+
+
+class Document {
+std::vector<DocElement> docElements_;
+
+    void DisplayStatistics() {
+        DocStats statistics;
+        std::vector<DocElement>::iterator it;
+        for (it = docElements_.begin(); it != docElements_.end(); ++it) {
+            it->Accept(statistics);
+        }
+        statistics.Display();
     }
 };
 
