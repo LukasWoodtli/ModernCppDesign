@@ -13,21 +13,28 @@ class RasterBitmap;
 
 class DocElementVisitor {
 public:
-    virtual void VisitParagraph(Paragraph&) = 0;
-    virtual void VisitRasterBitmap(RasterBitmap&) = 0;
+    virtual void Visit(Paragraph&) = 0;
+    virtual void Visit(RasterBitmap&) = 0;
     // ...
 };
 
 class Paragraph : public DocElement {
+    unsigned int fontSize_;
 public:
-        unsigned int NumChars() {
-            return 3; // would count chars here
-        }
-        unsigned int NumWords() {
-            return 5; // woud count words here
-        }
+    unsigned int NumChars() {
+        return 3; // would count chars here
+    }
+    unsigned int NumWords() {
+        return 5; // woud count words here
+    }
     virtual void Accept(DocElementVisitor& v) {
-        v.VisitParagraph(*this);
+        v.Visit(*this);
+    }
+    void SetFontSize(unsigned int fontSize) {
+        fontSize_ = fontSize;
+    }
+    unsigned int GetFontSize() const {
+        return fontSize_;
     }
 };
 
@@ -35,7 +42,7 @@ public:
 class RasterBitmap : public DocElement {
 public:
     virtual void Accept(DocElementVisitor& v) {
-        v.VisitRasterBitmap(*this);
+        v.Visit(*this);
     }
 };
 
@@ -43,12 +50,12 @@ public:
 class DocStats : public DocElementVisitor {
     unsigned int chars_, words_, images_;
 public:
-    virtual void VisitParagraph(Paragraph& par) {
+    virtual void Visit(Paragraph& par) {
         chars_ += par.NumChars();
         words_ += par.NumWords();
     }
 
-    virtual void VisitRasterBitmap(RasterBitmap&) {
+    virtual void Visit(RasterBitmap&) {
         ++images_;
     }
 
@@ -60,6 +67,16 @@ public:
     }
 };
 
+class IncrementFontSize : public DocElementVisitor {
+public:
+    virtual void Visit(Paragraph& par) {
+        par.SetFontSize(par.GetFontSize() + 1);
+    }
+
+    virtual void Visit(RasterBitmap&) {
+        // nothing to do
+    }
+};
 
 class Document {
 std::vector<DocElement> docElements_;
