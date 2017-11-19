@@ -6,6 +6,7 @@ class DocElementVisitor;
 class DocElement {
 public:
     virtual void Accept(DocElementVisitor&) = 0;
+    virtual ~DocElement() {}
 };
 
 
@@ -33,25 +34,17 @@ public:
 };
 
 class Paragraph : public DocElement {
-    unsigned int fontSize_;
 public:
-    virtual void Accept(DocElementVisitor& v) {
-       if (ParagraphVisitor * p = 
-            dynamic_cast<ParagraphVisitor*>(&v)) {
+    virtual void Accept(DocElementVisitor &v) {
+        if (ParagraphVisitor * p = dynamic_cast<ParagraphVisitor*>(&v)) {
                 p->VisitParagraph(*this);
-            }
+        }
     }
     unsigned int NumChars() {
         return 3; // would count chars here
     }
     unsigned int NumWords() {
         return 5; // woud count words here
-    }
-    void SetFontSize(unsigned int fontSize) {
-        fontSize_ = fontSize;
-    }
-    unsigned int GetFontSize() const {
-        return fontSize_;
     }
 };
 
@@ -69,9 +62,11 @@ public:
 };
 
 
-class DocStats : public DocElementVisitor, ParagraphVisitor, RasterBitmapVisitor {
+class DocStats : public DocElementVisitor, public ParagraphVisitor,  public RasterBitmapVisitor {
     unsigned int chars_, words_, images_;
 public:
+    DocStats() :chars_(0), words_(0), images_(0) {}
+
     virtual void VisitParagraph(Paragraph& par) {
         chars_ += par.NumChars();
         words_ += par.NumWords();
@@ -91,13 +86,16 @@ public:
 
 
 class Document {
-std::vector<DocElement> docElements_;
-
+    std::vector<DocElement*> docElements_;
+public:
+    void AddElement(DocElement* element) {
+        docElements_.push_back(element);
+    }
     void DisplayStatistics() {
         DocStats statistics;
-        std::vector<DocElement>::iterator it;
+        std::vector<DocElement*>::iterator it;
         for (it = docElements_.begin(); it != docElements_.end(); ++it) {
-            it->Accept(statistics);
+            (*it)->Accept(statistics);
         }
         statistics.Display();
     }
@@ -105,5 +103,9 @@ std::vector<DocElement> docElements_;
 
 
 int main() {
-
+    Paragraph* p = new Paragraph();
+    Document doc;
+    doc.AddElement(p);
+    doc.DisplayStatistics();
+    delete p;
 }
