@@ -8,27 +8,44 @@ public:
     virtual void Accept(DocElementVisitor&) = 0;
 };
 
-class Paragraph;
-class RasterBitmap;
+
 
 class DocElementVisitor {
 public:
-    virtual void Visit(Paragraph&) = 0;
-    virtual void Visit(RasterBitmap&) = 0;
-    // ...
+    // we need at least one virtual function to allow dynamic_cast
+    virtual ~DocElementVisitor() {}
+};
+
+
+class Paragraph;
+
+class ParagraphVisitor {
+public:
+    virtual void VisitParagraph(Paragraph&) = 0;
+};
+
+
+class RasterBitmap;
+
+class RasterBitmapVisitor {
+public:
+    virtual void VisitRasterBitmap(RasterBitmap&) = 0;
 };
 
 class Paragraph : public DocElement {
     unsigned int fontSize_;
 public:
+    virtual void Accept(DocElementVisitor& v) {
+       if (ParagraphVisitor * p = 
+            dynamic_cast<ParagraphVisitor*>(&v)) {
+                p->VisitParagraph(*this);
+            }
+    }
     unsigned int NumChars() {
         return 3; // would count chars here
     }
     unsigned int NumWords() {
         return 5; // woud count words here
-    }
-    virtual void Accept(DocElementVisitor& v) {
-        v.Visit(*this);
     }
     void SetFontSize(unsigned int fontSize) {
         fontSize_ = fontSize;
@@ -39,23 +56,28 @@ public:
 };
 
 
+
+
 class RasterBitmap : public DocElement {
 public:
     virtual void Accept(DocElementVisitor& v) {
-        v.Visit(*this);
+       if (RasterBitmapVisitor * p = 
+            dynamic_cast<RasterBitmapVisitor*>(&v)) {
+                p->VisitRasterBitmap(*this);
+            }
     }
 };
 
 
-class DocStats : public DocElementVisitor {
+class DocStats : public DocElementVisitor, ParagraphVisitor, RasterBitmapVisitor {
     unsigned int chars_, words_, images_;
 public:
-    virtual void Visit(Paragraph& par) {
+    virtual void VisitParagraph(Paragraph& par) {
         chars_ += par.NumChars();
         words_ += par.NumWords();
     }
 
-    virtual void Visit(RasterBitmap&) {
+    virtual void VisitRasterBitmap(RasterBitmap&) {
         ++images_;
     }
 
@@ -67,16 +89,6 @@ public:
     }
 };
 
-class IncrementFontSize : public DocElementVisitor {
-public:
-    virtual void Visit(Paragraph& par) {
-        par.SetFontSize(par.GetFontSize() + 1);
-    }
-
-    virtual void Visit(RasterBitmap&) {
-        // nothing to do
-    }
-};
 
 class Document {
 std::vector<DocElement> docElements_;
