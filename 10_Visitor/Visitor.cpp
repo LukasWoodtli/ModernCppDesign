@@ -1,111 +1,78 @@
 #include <vector>
 #include <iostream>
 
-class DocElementVisitor;
 
-class DocElement {
-public:
-    virtual void Accept(DocElementVisitor&) = 0;
-    virtual ~DocElement() {}
-};
-
-
-
-class DocElementVisitor {
+class BaseVisitor {
 public:
     // we need at least one virtual function to allow dynamic_cast
-    virtual ~DocElementVisitor() {}
+    virtual ~BaseVisitor() {}
+};
+
+template <class T, typename R = void>
+class Visitor {
+public:
+    typedef R ReturnType;
+    virtual ReturnType Visit(T&) = 0;
+};
+
+#define DEFINE_VISITABLE() \
+virtual ReturnType Accept(BaseVisitor& guest) \
+    { return AcceptImpl(*this, guest); }
+
+template <typename R = void>
+class BaseVisitable {
+public:
+    typedef R ReturnType;
+    virtual ~BaseVisitable() {}
+    virtual ReturnType Accept(BaseVisitor&) = 0;
+
+protected:
+    template<class T>
+    static ReturnType AcceptImpl(T& visited, BaseVisitor& guest) {
+        if (Visitor<T, R>* p = dynamic_cast<Visitor<T, R>*>(&guest)) {
+            return p->Visit(visited);
+        }
+
+        return ReturnType();
+    }
 };
 
 
-class Paragraph;
 
-class ParagraphVisitor {
+class DocElement : public BaseVisitable<> {
 public:
-    virtual void VisitParagraph(Paragraph&) = 0;
-};
-
-
-class RasterBitmap;
-
-class RasterBitmapVisitor {
-public:
-    virtual void VisitRasterBitmap(RasterBitmap&) = 0;
+    DEFINE_VISITABLE()
 };
 
 class Paragraph : public DocElement {
 public:
-    virtual void Accept(DocElementVisitor &v) {
-        if (ParagraphVisitor * p = dynamic_cast<ParagraphVisitor*>(&v)) {
-                p->VisitParagraph(*this);
-        }
-    }
-    unsigned int NumChars() {
-        return 3; // would count chars here
-    }
-    unsigned int NumWords() {
-        return 5; // woud count words here
-    }
+    DEFINE_VISITABLE()
 };
 
 
 
+class MyConcreteVisitor :
+    public BaseVisitor,
+    public Visitor<DocElement>,
+    public Visitor<Paragraph> {
 
-class RasterBitmap : public DocElement {
 public:
-    virtual void Accept(DocElementVisitor& v) {
-       if (RasterBitmapVisitor * p = 
-            dynamic_cast<RasterBitmapVisitor*>(&v)) {
-                p->VisitRasterBitmap(*this);
-            }
+    void Visit(DocElement&) {
+        std::cout << "Visit(DocElement&)\n";
+    }
+
+    void Visit(Paragraph&) {
+        std::cout << "Visit(Paragraph&)\n";
     }
 };
 
-
-class DocStats : public DocElementVisitor, public ParagraphVisitor,  public RasterBitmapVisitor {
-    unsigned int chars_, words_, images_;
-public:
-    DocStats() :chars_(0), words_(0), images_(0) {}
-
-    virtual void VisitParagraph(Paragraph& par) {
-        chars_ += par.NumChars();
-        words_ += par.NumWords();
-    }
-
-    virtual void VisitRasterBitmap(RasterBitmap&) {
-        ++images_;
-    }
-
-    void Display() {
-        std::cout << "Stats:\n";
-        std::cout << chars_ << "\n";
-        std::cout << words_ << "\n";
-        std::cout << images_ << "\n\n";
-    }
-};
-
-
-class Document {
-    std::vector<DocElement*> docElements_;
-public:
-    void AddElement(DocElement* element) {
-        docElements_.push_back(element);
-    }
-    void DisplayStatistics() {
-        DocStats statistics;
-        std::vector<DocElement*>::iterator it;
-        for (it = docElements_.begin(); it != docElements_.end(); ++it) {
-            (*it)->Accept(statistics);
-        }
-        statistics.Display();
-    }
-};
 
 
 int main() {
-    Paragraph* p = new Paragraph();
-    Document doc;
-    doc.AddElement(p);
-    doc.DisplayStatistics();
-    delete p;
+    MyConcreteVisitor visitor;
+    Paragraph par;
+    par.Accept(visitor);
+    
+    DocElement* d = &par;
+    d->Accept(visitor);
 }
