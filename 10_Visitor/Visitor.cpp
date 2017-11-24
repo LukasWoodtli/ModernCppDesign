@@ -19,7 +19,18 @@ public:
 virtual ReturnType Accept(BaseVisitor& guest) \
     { return AcceptImpl(*this, guest); }
 
-template <typename R = void>
+
+template <class R, class Visited>
+struct DefaultCatchAll {
+    static R OnUnknownVisitor(Visited&, BaseVisitor&) {
+        /* here custom default action can be put for
+           visiting an unknown type */
+        return R();
+    }
+};
+
+template <typename R = void,
+          template <typename, class> class CatchAll = DefaultCatchAll>
 class BaseVisitable {
 public:
     typedef R ReturnType;
@@ -33,7 +44,7 @@ protected:
             return p->Visit(visited);
         }
 
-        return ReturnType();
+        return CatchAll<R, T>::OnUnknownVisitor(visited, guest);
     }
 };
 
