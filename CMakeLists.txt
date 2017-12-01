@@ -26,3 +26,5 @@ add_subdirectory("07_SmartPointers")
 add_subdirectory("08_ObjectFactories")
 add_subdirectory("09_AbstractFactory")
 add_subdirectory("10_Visitor")
+add_subdirectory("11_Multimethods")
+
