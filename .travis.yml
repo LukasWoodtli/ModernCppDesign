@@ -1,5 +1,5 @@
 before_install:
-- if [ "$CXX" = "g++" ] && [ "$TRAVIS_OS_NAME" = "osx" ]; then brew install gcc5 && CC=gcc-5 && CXX=g++-5; fi
+- if [ "$CXX" = "g++" ] && [ "$TRAVIS_OS_NAME" = "osx" ]; then rm '/usr/local/include/c++' && brew install gcc5 && CC=gcc-5 && CXX=g++-5; fi
 install:
 # /usr/bin/gcc is 4.6 always, but gcc-X.Y is available.
 - if [ "$CXX" = "g++" ]; then export CXX="g++-5" CC="gcc-5"; fi
@@ -19,8 +19,8 @@ addons:
     - ubuntu-toolchain-r-test
     - llvm-toolchain-precise-3.7
     packages:
-    - gcc-4.9
-    - g++-4.9
+    - gcc-5
+    - g++-5
     - clang-3.7
     - valgrind
 
