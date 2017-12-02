@@ -1,5 +1,9 @@
 My playground for the examples of the famous book: ["Modern C++ Design"](http://erdani.com/index.php/books/modern-c-design/)
 
+# Notes
+
+My notes to the book can be found [here](http://lukaswoodtli.github.io/modern_cpp_design.html)
+
 # Build
 [![Build Status](https://travis-ci.org/LukasWoodtli/ModernCppDesign.svg?branch=master)](https://travis-ci.org/LukasWoodtli/ModernCppDesign)
 
