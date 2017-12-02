@@ -196,13 +196,13 @@ My playground for the examples of the famous book: ["Modern C++ Design"](http://
 | 11.2      | When Are Multimethods Needed?                       |   ✓  |
 | 11.3      | Double Switch-on-Type: Brute Force                  |   ✓  |
 | 11.4      | The Brute-Force Approach Automated                  |   ✓  |
-| 11.5      | Symmetry with the Brute-Force Dispatcher            |      |
-| 11.6      | The Logarithmic Double Dispatcher                   |      |
-| 11.7      | FnDispatcher and Symmetry                           |      |
-| 11.8      | Double Dispatch to Functors                         |      |
-| 11.9      | Converting Arguments: static_cast or dynamic_cast?  |      |
-| 11.10     | Constant-Time Multimethods: Raw Speed               |      |
-| 11.11     | BasicDispatcher and BasicFastDispatcher as Policies |      |
-| 11.12     | Looking Forward                                     |      |
-| 11.13     | Summary                                             |      |
-| 11.14     | Double Dispatcher Quick Facts                       |      |
+| 11.5      | Symmetry with the Brute-Force Dispatcher            |   ✓  |
+| 11.6      | The Logarithmic Double Dispatcher                   |   ✓  |
+| 11.7      | FnDispatcher and Symmetry                           |   ✓  |
+| 11.8      | Double Dispatch to Functors                         |   ✓  |
+| 11.9      | Converting Arguments: static_cast or dynamic_cast?  |   ✓  |
+| 11.10     | Constant-Time Multimethods: Raw Speed               |   ✓  |
+| 11.11     | BasicDispatcher and BasicFastDispatcher as Policies |   ✓  |
+| 11.12     | Looking Forward                                     |   ✓  |
+| 11.13     | Summary                                             |   ✓  |
+| 11.14     | Double Dispatcher Quick Facts                       |   ✓  |
