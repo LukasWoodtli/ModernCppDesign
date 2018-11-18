@@ -1,8 +1,8 @@
 before_install:
-- if [ "$CXX" = "g++" ] && [ "$TRAVIS_OS_NAME" = "osx" ]; then rm '/usr/local/include/c++' && brew install gcc5 && CC=gcc-5 && CXX=g++-5; fi
+- if [ "$CXX" = "g++" ] && [ "$TRAVIS_OS_NAME" = "osx" ]; then rm '/usr/local/include/c++' && brew install gcci@8 && CC=gcc-8 && CXX=g++-8; fi
 install:
 # /usr/bin/gcc is 4.6 always, but gcc-X.Y is available.
-- if [ "$CXX" = "g++" ]; then export CXX="g++-5" CC="gcc-5"; fi
+- if [ "$CXX" = "g++" ]; then export CXX="g++-8" CC="gcc-8"; fi
 # /usr/bin/clang is 3.4, lets override with modern one.
 - if [ "$CXX" = "clang++" ] && [ "$TRAVIS_OS_NAME" = "linux" ]; then export CXX="clang++-3.7" CC="clang-3.7"; fi
 - echo ${PATH}
@@ -19,10 +19,9 @@ addons:
     - ubuntu-toolchain-r-test
     - llvm-toolchain-precise-3.7
     packages:
-    - gcc-5
-    - g++-5
+    - gcc-8
+    - g++-8
     - clang-3.7
-    - valgrind
 
 language: cpp
 compiler:
