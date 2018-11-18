@@ -1,5 +1,5 @@
 before_install:
-- if [ "$CXX" = "g++" ] && [ "$TRAVIS_OS_NAME" = "osx" ]; then rm '/usr/local/include/c++' && brew install gcc@8 && CC=gcc-8 && CXX=g++-8; fi
+- if [ "$CXX" = "g++" ] && [ "$TRAVIS_OS_NAME" = "osx" ]; then brew install gcc@8 && CC=gcc-8 && CXX=g++-8; fi
 install:
 # /usr/bin/gcc is 4.6 always, but gcc-X.Y is available.
 - if [ "$CXX" = "g++" ]; then export CXX="g++-8" CC="gcc-8"; fi
